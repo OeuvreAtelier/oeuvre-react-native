@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import React from "react";
+import { DrawerToggleButton } from '@react-navigation/drawer';
 
 export default function TabsLayout() {
 
@@ -14,7 +15,7 @@ export default function TabsLayout() {
                     name = focused ? "wallet" : "wallet-outline"
                     break;
             case "whislist":
-                name = focused ? "heart" : "heart-outline"
+                name = focused ? "bookmarks" : "bookmarks-outline"
                 break;
             default:
                 break;
@@ -25,13 +26,12 @@ export default function TabsLayout() {
     
     return (
         <Tabs screenOptions={({ route }) => ({
-            headerShown: false,
-            tabBarIcon: (opt) => getTabBarIcon(route.name, opt)
-        })}>
-            <Tabs.Screen 
-            name="index" />
-            <Tabs.Screen name="transaction"/>
-            <Tabs.Screen name="whislist"/>
-        </Tabs>
-    )
+            tabBarIcon: (opt) => getTabBarIcon(route.name, opt),
+            headerRight: () => <DrawerToggleButton tintColor="#000"/>
+          })}>
+            <Tabs.Screen name="index" options={{ title: "Home" }} />
+            <Tabs.Screen name="transaction" options={{ title: "Transaction" }} />
+            <Tabs.Screen name="whislist" options={{ title: "Bookmarks" }} />
+          </Tabs>
+        );
 }
