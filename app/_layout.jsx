@@ -7,7 +7,13 @@ export default function RootLayout() {
             name="(drawer)" 
             options={{
                 headerShown: false
+                , header: () => <CustomHeader />
             }}/>
+            <Stack.Screen
+            name="(screen)"
+            options={{
+                headerShown: false
+            }} />
         </Stack>
     )
 }

@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 import React, { useEffect } from "react";
 import { Drawer } from "expo-router/drawer";
-import { DrawerContentScrollView, DrawerItem, DrawerToggleButton } from "@react-navigation/drawer";
+import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import { router, usePathname } from "expo-router";
 
@@ -13,84 +13,88 @@ const CustomDrawerContent = (props) => {
   }, [pathname]);
 
   return (
-    <DrawerContentScrollView {...props}>
-      <View style={styles.userInfoWrapper}>
-        <Image
-          source={{ uri: "https://randomuser.me/api/portraits/men/26.jpg" }}
-          width={80}
-          height={80}
-          style={styles.userImg}
-        />
-        <View style={styles.userDetailsWrapper}>
-          <Text style={styles.userName}>John Doe</Text>
-          <Text style={styles.userEmail}>john@email.com</Text>
+    <View style={{ flex: 1 }}>
+      <DrawerContentScrollView {...props}>
+        <View style={styles.userInfoWrapper}>
+          <Image
+            source={{ uri: "https://randomuser.me/api/portraits/men/26.jpg" }}
+            width={80}
+            height={80}
+            style={styles.userImg}
+          />
+          <View style={styles.userDetailsWrapper}>
+            <Text style={styles.userName}>John Doe</Text>
+            <Text style={styles.userEmail}>john@email.com</Text>
+          </View>
         </View>
+        <DrawerItem
+          icon={({ color, size }) => (
+            <Ionicons
+              name="person-outline"
+              size={size}
+              color={pathname == "/person" ? "#fff" : "#000"}
+            />
+          )}
+          label={"Profile"}
+          labelStyle={[
+            styles.navItemLabel,
+            { color: pathname == "/person" ? "#fff" : "#000" },
+          ]}
+          style={{ backgroundColor: pathname == "/person" ? "#333" : "#fff" }}
+          onPress={() => {
+            router.push("(screen)/profile");
+          }}
+        />
+        <DrawerItem
+          icon={({ color, size }) => (
+            <Ionicons
+              name="information-circle-outline"
+              size={size}
+              color={pathname == "/information-circle" ? "#fff" : "#000"}
+            />
+          )}
+          label={"About"}
+          labelStyle={[
+            styles.navItemLabel,
+            { color: pathname == "/information-circle" ? "#fff" : "#000" },
+          ]}
+          style={{ backgroundColor: pathname == "/information-circle" ? "#333" : "#fff" }}
+          onPress={() => {
+            router.push("(screen)/about");
+          }}
+        />
+      </DrawerContentScrollView>
+      <View style={{ marginBottom: 5 }}>
+        <DrawerItem
+          icon={({ color, size }) => (
+            <Ionicons
+              name="log-out-outline"
+              size={size}
+              color={pathname == "/log-out" ? "#fff" : "#000"}
+            />
+          )}
+          label={"Logout"}
+          labelStyle={[
+            styles.navItemLabel,
+            { color: pathname == "/log-out" ? "#fff" : "#000" },
+          ]}
+          style={{ backgroundColor: pathname == "/log-out" ? "#333" : "#fff" }}
+          onPress={() => {
+            router.push("/login");
+          }}
+        />
       </View>
-      <DrawerItem
-        icon={({ color, size }) => (
-          <Ionicons
-            name="person-outline"
-            size={size}
-            color={pathname == "/person" ? "#fff" : "#000"}
-          />
-        )}
-        label={"Profile"}
-        labelStyle={[
-          styles.navItemLabel,
-          { color: pathname == "/person" ? "#fff" : "#000" },
-        ]}
-        style={{ backgroundColor: pathname == "/person" ? "#333" : "#fff" }}
-        onPress={() => {
-          router.push("/profile");
-        }}
-      />
-      <DrawerItem
-        icon={({ color, size }) => (
-          <Ionicons
-            name="information-circle-outline"
-            size={size}
-            color={pathname == "/information-circle" ? "#fff" : "#000"}
-          />
-        )}
-        label={"About"}
-        labelStyle={[
-          styles.navItemLabel,
-          { color: pathname == "/information-circle" ? "#fff" : "#000" },
-        ]}
-        style={{ backgroundColor: pathname == "/information-circle" ? "#333" : "#fff" }}
-        onPress={() => {
-          router.push("/about");
-        }}
-      />
-      <DrawerItem
-        icon={({ color, size }) => (
-          <Ionicons
-            name="log-out-outline"
-            size={size}
-            color={pathname == "/log-out" ? "#fff" : "#000"}
-          />
-        )}
-        label={"Logout"}
-        labelStyle={[
-          styles.navItemLabel,
-          { color: pathname == "/log-out" ? "#fff" : "#000" },
-        ]}
-        style={{ backgroundColor: pathname == "/log-out" ? "#333" : "#fff" }}
-        onPress={() => {
-          router.push("/login");
-        }}
-      />
-    </DrawerContentScrollView>
+    </View>
   );
 };
 
-export default function Layout() {
+export default function DrawerLayout() {
   return (
-    <Drawer drawerContent={(props) => <CustomDrawerContent {...props} />} screenOptions={{headerShown: false}}>
-      <Drawer.Screen name="profile" options={{headerShown: true}}  />
-      <Drawer.Screen name="about" options={{headerShown: true}} />
-
-    </Drawer>
+    <Drawer
+      drawerPosition="right"
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
+      screenOptions={{ headerShown: false }}
+    />
   );
 }
 
@@ -119,7 +123,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   userEmail: {
-    fontSize:16,
+    fontSize: 16,
     fontStyle: 'italic',
     textDecorationLine: 'underline',
   }
