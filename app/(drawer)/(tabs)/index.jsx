@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, ScrollView, StyleSheet, FlatList } from "react-native";
 import Category from "../../../components/Category";
 import BestSeller from "../../../components/CardProduct";
+import { router } from "expo-router";
 
 const categories = [
     { id: '1', title: 'Category 1', iconName: 'home' },
@@ -26,6 +27,10 @@ const categories = [
 ];
 
 const Home = () => {
+
+    const handlePress = (product) => {
+        router.push('detailProduct', { product });
+      };
     
   return (
     <ScrollView style={styles.container}>
@@ -42,8 +47,20 @@ const Home = () => {
       </ScrollView>
       <Text style={styles.heading}>Best Seller</Text>
       <View style={styles.bestSellerContainer}>
-        <BestSeller category="Category" name="Product 1" seller="Seller 1" price="$100" />
-        <BestSeller category="Category" name="Product 2" seller="Seller 2" price="$200" />
+      <BestSeller 
+          category="Category" 
+          name="Product 1" 
+          seller="Seller 1" 
+          price="$100" 
+          onPress={() => handlePress({ category: 'Category', name: 'Product 1', seller: 'Seller 1', price: '$100' })}
+        />
+        <BestSeller 
+          category="Category" 
+          name="Product 2" 
+          seller="Seller 2" 
+          price="$200" 
+          onPress={() => handlePress({ category: 'Category', name: 'Product 2', seller: 'Seller 2', price: '$200' })}
+        />
       </View>
     </ScrollView>
   );
