@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import { Tabs, router, useNavigation } from "expo-router";
 import React from "react";
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
@@ -43,11 +43,15 @@ export default function TabsLayout() {
     return <Ionicons name={name} size={size} color="#0ea5e9" />;
   }
 
-  const CartIcon = () => (
-    <TouchableOpacity>
-      <Ionicons name="cart-outline" size={24} color="#fff" />
-    </TouchableOpacity>
-  );
+  const CartIcon = () => {
+    const navigation = useNavigation();
+
+    return (
+      <TouchableOpacity onPress={() => router.push('/cart')}>
+        <Ionicons name="cart-outline" size={24} color="#fff" />
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <Tabs screenOptions={({ route }) => ({
@@ -66,12 +70,13 @@ export default function TabsLayout() {
         title: "Bookmarks"
       }} />
     </Tabs>
+    
   );
 }
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 35,
+    marginTop: 30,
     height: 60,
     backgroundColor: '#0ea5e9',
     paddingHorizontal: 10,

@@ -1,13 +1,31 @@
 import React from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import CardProduct from "../../../components/CardProduct";
+import { router } from "expo-router";
 
 const Wishlist = () => {
+
+    const handlePress = (product) => {
+        router.push('detailProduct', { product });
+    };
+
   return (
     <ScrollView style={styles.container}>
         <View style={styles.cardProductList}>
-            <CardProduct category="Category" name="Product 1" seller="Seller 1" price="$100" />
-            <CardProduct category="Category" name="Product 2" seller="Seller 2" price="$200" />
+        <CardProduct 
+          category="Category" 
+          name="Product 1" 
+          seller="Seller 1" 
+          price="$100" 
+          onPress={() => handlePress({ category: 'Category', name: 'Product 1', seller: 'Seller 1', price: '$100' })}
+        />
+        <CardProduct 
+          category="Category" 
+          name="Product 2" 
+          seller="Seller 2" 
+          price="$200" 
+          onPress={() => handlePress({ category: 'Category', name: 'Product 2', seller: 'Seller 2', price: '$200' })}
+        />
         </View>
     </ScrollView>
   );
