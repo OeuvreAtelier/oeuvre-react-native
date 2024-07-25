@@ -12,9 +12,6 @@ const CartItem = ({ product }) => {
         <Text style={styles.name}>{product.name}</Text>
         <Text style={styles.price}>{product.price}</Text>
       </View>
-      <TouchableOpacity style={styles.wishlist}>
-        <Ionicons name="heart-outline" size={24} color="black" />
-      </TouchableOpacity>
       <View style={styles.quantityContainer}>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>-</Text>
