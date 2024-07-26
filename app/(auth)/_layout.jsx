@@ -1,12 +1,7 @@
 import { Redirect, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 
-import { useAuth } from "../../context/AuthContext";
-
 const AuthLayout = () => {
-  const {isLoggedIn } = useAuth();
-
-  if (isLoggedIn) return <Redirect href="(tabs)" />;
 
   return (
     <>
