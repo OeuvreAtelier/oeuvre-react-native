@@ -36,8 +36,9 @@ export default function ScreenLayout() {
                   navigation.goBack();
                 }}>
                 <Ionicons name="arrow-back" size={28} color="#000" />
-              </TouchableOpacity>
-            ),}} />
+              </TouchableOpacity>),
+                headerShown:false,
+            }} />
             <Stack.Screen name="cart" options={{title: "Cart", headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
