@@ -1,15 +1,15 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
-const CardProduct = ({ category, name, seller, price }) => {
+const CardProduct = ({ category, name, seller, price, onPress }) => {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image source={{ uri: "https://via.placeholder.com/100" }} style={styles.image} />
       <Text>{category}</Text>
       <Text>{name}</Text>
       <Text>{seller}</Text>
       <Text>{price}</Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 

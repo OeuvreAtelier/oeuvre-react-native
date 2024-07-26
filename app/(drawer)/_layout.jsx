@@ -91,7 +91,6 @@ const CustomDrawerContent = (props) => {
 export default function DrawerLayout() {
   return (
     <Drawer
-      drawerPosition="right"
       drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{ headerShown: false }}
     />
