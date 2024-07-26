@@ -80,7 +80,7 @@ const CustomDrawerContent = (props) => {
           ]}
           style={{ backgroundColor: pathname == "/log-out" ? "#333" : "#fff" }}
           onPress={() => {
-            router.push("/login");
+            router.replace("(auth)/login");
           }}
         />
       </View>

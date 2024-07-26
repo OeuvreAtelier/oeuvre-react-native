@@ -4,19 +4,24 @@ import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-nativ
 import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
+  const [errorMessage, setErrorMessage] = useState("")
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const {login} = useAuth();
   const router = useRouter();
 
   const handleLogin = async (e) => {
+    // login(username, password)
+    // router.replace('(drawer)')
+    
+  // }
     e.preventDefault();
 
     try {
       const success = await login(username, password);
       console.log("success...", success);
       if (success) {
-        router.push('(drawer)');
+        router.replace('(drawer)');
       } else {
         setErrorMessage("Invalid username or password");
       }
