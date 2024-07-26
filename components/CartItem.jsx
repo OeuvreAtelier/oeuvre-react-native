@@ -1,9 +1,21 @@
-// components/CartItem.js
-import React from 'react';
+import React, { useReducer, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import {increment, decrement} from "../redux/features/counterSlice"
+import { useDispatch, useSelector } from 'react-redux';
 
 const CartItem = ({ product }) => {
+
+  const count = useSelector((state) => state.counter.value)
+  const dispatch = useDispatch();
+
+
+  const handleIncrement = () => {
+    dispatch(increment(1))
+  }
+
+  const handleDecrement = () => {
+    dispatch(decrement())
+  }
   return (
     <View style={styles.container}>
       <View style={styles.checkbox} />
@@ -13,11 +25,11 @@ const CartItem = ({ product }) => {
         <Text style={styles.price}>{product.price}</Text>
       </View>
       <View style={styles.quantityContainer}>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={handleDecrement}>
           <Text style={styles.buttonText}>-</Text>
         </TouchableOpacity>
-        <Text style={styles.quantity}>1</Text>
-        <TouchableOpacity style={styles.button}>
+        <Text style={styles.quantity}>{count}</Text>
+        <TouchableOpacity style={styles.button} onPress={handleIncrement}>
           <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
       </View>
@@ -78,6 +90,10 @@ const styles = StyleSheet.create({
   quantity: {
     marginHorizontal: 10,
     fontSize: 16,
+  },
+  countText: {
+    fontSize: 24,
+    marginBottom: 20,
   },
 });
 
