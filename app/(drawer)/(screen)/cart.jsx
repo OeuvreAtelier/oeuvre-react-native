@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, ScrollView, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import CartItem from '../../../components/CartItem';
 import CardProduct from '../../../components/CardProduct';
+import { router } from 'expo-router';
 
 const cartItems = [
   { id: '1', name: 'Product 1', price: 'Rp120.000', image: 'https://via.placeholder.com/50' },
