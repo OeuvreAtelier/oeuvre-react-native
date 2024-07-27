@@ -5,7 +5,6 @@ const AuthLayout = () => {
 
   return (
     <>
-   
       <Stack>
         <Stack.Screen
           name="login"

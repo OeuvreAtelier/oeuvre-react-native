@@ -1,12 +1,15 @@
 import { Stack } from "expo-router";
 import { AuthProvider } from "../context/AuthContext";
 import { StatusBar } from "expo-status-bar";
+import { Provider } from "react-redux";
+import { store } from "../redux/store";
 
 export default function RootLayout() {
 
     return (
         <AuthProvider>
-          <Stack>
+            <Provider store={store}>
+            <Stack>
               <Stack.Screen 
               name="(drawer)" 
               options={{
@@ -24,6 +27,8 @@ export default function RootLayout() {
                   headerShown: false
               }} />
           </Stack>
+            </Provider>
+          
         </AuthProvider>
     )
 }
