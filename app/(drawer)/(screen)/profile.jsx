@@ -1,13 +1,53 @@
-import React, { useState } from "react";
-import { Button, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import React, { useState, useEffect } from "react";
+import { Button, Image, ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import CardProduct from "../../../components/CardProduct";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from 'expo-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import defaultProfileImage from '../../../assets/default-profile-image.png';
+import defaultHeaderImage from '../../../assets/default-header-image.png';
 
 const Profile = () => {
-  const [isCustomer, setIsCustomer] = useState(true); 
+  const [isCustomer, setIsCustomer] = useState(true);
+  const [profileImage, setProfileImage] = useState(null);
+  const [headerImage, setHeaderImage] = useState(null);
 
-  // Sample profile data
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const savedProfileImage = await AsyncStorage.getItem('profileImage');
+        const savedHeaderImage = await AsyncStorage.getItem('headerImage');
+        if (savedProfileImage) setProfileImage(savedProfileImage);
+        if (savedHeaderImage) setHeaderImage(savedHeaderImage);
+      } catch (error) {
+        console.error('Failed to load images from storage', error);
+      }
+    };
+
+    loadImages();
+  }, []);
+
+  const pickImage = async (type) => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const uri = result.assets[0].uri;
+      if (type === 'header') {
+        setHeaderImage(uri);
+        await AsyncStorage.setItem('headerImage', uri);
+      } else if (type === 'profile') {
+        setProfileImage(uri);
+        await AsyncStorage.setItem('profileImage', uri);
+      }
+    }
+  };
+
   const profileData = {
     firstName: 'Ferdy',
     lastName: 'Fermadi',
@@ -29,10 +69,24 @@ const Profile = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Image source={{ uri: 'https://via.placeholder.com/800x200' }} style={styles.headerImage} />
+        <Image 
+          source={headerImage ? { uri: headerImage } : defaultHeaderImage} 
+          style={styles.headerImage} 
+        />
+        <TouchableOpacity style={styles.editPhotoContainerHeader} onPress={() => pickImage('header')}>
+          <Ionicons name="camera" size={16} color="#fff" />
+          <Text style={styles.editPhotoText}>Edit Foto</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.profileImageContainer}>
-        <Image source={{ uri: 'https://via.placeholder.com/100' }} style={styles.profileImage} />
+        <Image 
+          source={profileImage ? { uri: profileImage } : defaultProfileImage} 
+          style={styles.profileImage} 
+        />
+        <TouchableOpacity style={styles.editPhotoContainerProfile} onPress={() => pickImage('profile')}>
+          <Ionicons name="camera" size={12} color="#fff" />
+          <Text style={styles.editPhotoTextProfile}>Edit Foto</Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.profileInfo}>
         <Text style={styles.displayName}>{profileData.displayName}</Text>
@@ -83,9 +137,11 @@ const Profile = () => {
           <Text style={styles.bio}>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam ut dolores exercitationem sunt, voluptate vel voluptas quam beatae qui unde nobis molestiae aperiam repellat debitis inventore eos, nam dolorum? Exercitationem.
             Lorem ipsum dolor sit, amet consectetur adipisicing elit. Earum assumenda, omnis, iusto asperiores, labore ducimus dolorum harum maiores et commodi quia est a eos tempora debitis illo ex repellat. Hic.
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sapiente a nobis quasi eum dolore delectus quas odit, eius omnis tempora quos corrupti nesciunt quaerat iusto animi voluptate non impedit optio.
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Esse quidem dolorem voluptate. Maiores reiciendis corporis porro nisi, suscipit consequuntur, dolorum minima, ratione similique voluptatibus cumque culpa sed. Saepe, consequatur repellat.
           </Text>
+          <View style={styles.emailContainer}>
+            <Ionicons name="mail" size={18} color="#333" />
+            <Text style={styles.emailText}>{profileData.email}</Text>
+          </View>
           <View style={styles.bestSellerContainer}>
             <CardProduct 
               category="Category" 
@@ -131,6 +187,7 @@ const styles = StyleSheet.create({
   header: {
     width: '100%',
     height: 200,
+    position: 'relative',
   },
   headerImage: {
     width: '100%',
@@ -139,6 +196,7 @@ const styles = StyleSheet.create({
   profileImageContainer: {
     marginTop: -50,
     marginLeft: 10,
+    position: 'relative',
   },
   profileImage: {
     width: 100,
@@ -197,8 +255,18 @@ const styles = StyleSheet.create({
   },
   bio: {
     fontSize: 16,
-    marginBottom: 20,
+    marginBottom: 10,
     marginTop: 20,
+  },
+  emailContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 5,
+  },
+  emailText: {
+    fontSize: 15,
+    color: '#333',
+    marginLeft: 5,
   },
   bestSellerContainer: {
     flexDirection: "row",
@@ -207,6 +275,38 @@ const styles = StyleSheet.create({
   },
   cardProduct: {
     marginVertical: 10,
+  },
+  editPhotoContainerHeader: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+    borderRadius: 5,
+  },
+  editPhotoContainerProfile: {
+    position: 'absolute',
+    bottom: 10,
+    left: 18,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    paddingVertical: 3,
+    paddingHorizontal: 8,
+    borderRadius: 5,
+  },
+  editPhotoText: {
+    color: '#fff',
+    marginLeft: 5,
+    fontSize: 12,
+  },
+  editPhotoTextProfile: {
+    color: '#fff',
+    marginLeft: 3,
+    fontSize: 10,
   },
 });
 
