@@ -17,11 +17,6 @@ export default function RootLayout() {
                   , header: () => <CustomHeader />
               }}/>
               <Stack.Screen
-              name="(screen)"
-              options={{
-                  headerShown: false
-              }} />
-              <Stack.Screen
               name="(auth)"
               options={{
                   headerShown: false

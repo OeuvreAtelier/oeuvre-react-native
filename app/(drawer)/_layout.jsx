@@ -48,6 +48,24 @@ const CustomDrawerContent = (props) => {
         <DrawerItem
           icon={({ color, size }) => (
             <Ionicons
+              name="location-outline"
+              size={size}
+              color={pathname == "/location" ? "#fff" : "#000"}
+            />
+          )}
+          label={"Address"}
+          labelStyle={[
+            styles.navItemLabel,
+            { color: pathname == "/location" ? "#fff" : "#000" },
+          ]}
+          style={{ backgroundColor: pathname == "/location" ? "#333" : "#fff" }}
+          onPress={() => {
+            router.push("(screen)/address");
+          }}
+        />
+        <DrawerItem
+          icon={({ color, size }) => (
+            <Ionicons
               name="information-circle-outline"
               size={size}
               color={pathname == "/information-circle" ? "#fff" : "#000"}

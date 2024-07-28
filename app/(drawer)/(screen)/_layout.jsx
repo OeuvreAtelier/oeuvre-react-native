@@ -30,6 +30,14 @@ export default function ScreenLayout() {
                 <Ionicons name="arrow-back" size={28} color="#000" />
               </TouchableOpacity>
             ), }}/>
+            <Stack.Screen name="address" options={{title: "Address", headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.goBack();
+                }}>
+                <Ionicons name="arrow-back" size={28} color="#000" />
+              </TouchableOpacity>
+            ),}} />
             <Stack.Screen name="detailProduct" options={{title: "Detail Product", headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {

@@ -37,6 +37,8 @@ export default function TabsLayout() {
       case "whislist":
         name = focused ? "bookmarks" : "bookmarks-outline";
         break;
+      case "discovery":
+        name = focused ? "compass" : "compass-outline"
       default:
         break;
     }
@@ -60,6 +62,10 @@ export default function TabsLayout() {
       <Tabs.Screen name="index" options={{
         header: () => <CustomHeader title="Home" cartIcon={<CartIcon />} headerRight={<DrawerToggleButton tintColor="#fff" />} />,
         title: "Home"
+      }} />
+      <Tabs.Screen name="discovery" options={{
+        header: () => <CustomHeader title="Discovery" cartIcon={<CartIcon />} headerRight={<DrawerToggleButton tintColor="#fff" />} />,
+        title: "Discovery"
       }} />
       <Tabs.Screen name="transaction" options={{
         header: () => <CustomHeader title="Transaction" cartIcon={<CartIcon />} headerRight={<DrawerToggleButton tintColor="#fff" />} />,
