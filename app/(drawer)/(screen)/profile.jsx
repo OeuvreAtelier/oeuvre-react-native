@@ -29,6 +29,7 @@ const Profile = () => {
       try {
         const savedProfileImage = await AsyncStorage.getItem('profileImage');
         const savedHeaderImage = await AsyncStorage.getItem('headerImage');
+
         if (savedProfileImage) setProfileImage(savedProfileImage);
         if (savedHeaderImage) setHeaderImage(savedHeaderImage);
       } catch (error) {

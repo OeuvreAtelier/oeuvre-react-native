@@ -16,7 +16,7 @@ export default function ScreenLayout() {
             options={{title:"Profile", headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
-                  navigation.goBack();
+                  navigation.goBack(unstable_settings);
                 }}>
                 <Ionicons name="arrow-back" size={28} color="#000" />
               </TouchableOpacity>)
@@ -25,7 +25,7 @@ export default function ScreenLayout() {
             options={{title:"About", headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
-                  navigation.goBack();
+                  navigation.goBack(unstable_settings);
                 }}>
                 <Ionicons name="arrow-back" size={28} color="#000" />
               </TouchableOpacity>
@@ -33,7 +33,7 @@ export default function ScreenLayout() {
             <Stack.Screen name="address" options={{title: "Address", headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
-                  navigation.goBack();
+                  navigation.goBack(unstable_settings);
                 }}>
                 <Ionicons name="arrow-back" size={28} color="#000" />
               </TouchableOpacity>
@@ -41,7 +41,7 @@ export default function ScreenLayout() {
             <Stack.Screen name="detailProduct" options={{title: "Detail Product", headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
-                  navigation.goBack();
+                  navigation.goBack(unstable_settings);
                 }}>
                 <Ionicons name="arrow-back" size={28} color="#000" />
               </TouchableOpacity>),
@@ -50,7 +50,7 @@ export default function ScreenLayout() {
             <Stack.Screen name="cart" options={{title: "Cart", headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
-                  navigation.goBack();
+                  navigation.goBack(unstable_settings);
                 }}>
                 <Ionicons name="arrow-back" size={28} color="#000" />
               </TouchableOpacity>
