@@ -1,7 +1,8 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useAuth } from "../../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login() {
   const [errorMessage, setErrorMessage] = useState("")
@@ -11,15 +12,12 @@ export default function Login() {
   const router = useRouter();
 
   const handleLogin = async (e) => {
-    // login(username, password)
-    // router.replace('(drawer)')
-    
-  // }
     e.preventDefault();
 
     try {
       const success = await login(username, password);
       console.log("success...", success);
+      const userId = await AsyncStorage.getItem("id")
       if (success) {
         router.replace('(drawer)');
       } else {
@@ -30,13 +28,12 @@ export default function Login() {
     }
   };
 
-
   return (
     <View style={styles.container}>
-      {/* <View style={styles.logoContainer}>
-        <Image source={require('./path/to/your/logo.png')} style={styles.logo} />
-      </View> */}
       <View style={styles.formContainer}>
+        <View style={styles.logoContainer}>
+          <Image source={require('../../assets/logo.png')} style={styles.logo} />
+        </View>
         <TextInput
           style={styles.input}
           placeholder="Username"
@@ -53,6 +50,7 @@ export default function Login() {
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Log In</Text>
         </TouchableOpacity>
+        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
       </View>
     </View>
   );
@@ -63,10 +61,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#f0f0f0",
+    backgroundColor: "#3730a3",
   },
   logoContainer: {
-    marginBottom: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10,
   },
   logo: {
     width: 175,
@@ -76,9 +76,15 @@ const styles = StyleSheet.create({
   formContainer: {
     width: "80%",
     maxWidth: 400,
+    backgroundColor: '#ffffff',
+    padding: 20,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
   },
   input: {
     height: 50,
+    width: "100%",
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 8,
@@ -86,8 +92,10 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   button: {
+    marginTop:20,
     height: 50,
-    backgroundColor: "#007bff",
+    width: "100%",
+    backgroundColor: "#3730a3",
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",

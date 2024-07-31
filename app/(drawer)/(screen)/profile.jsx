@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Image, ScrollView, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { Button, Image, ScrollView, StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from "react-native";
 import CardProduct from "../../../components/CardProduct";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
@@ -7,11 +7,22 @@ import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import defaultProfileImage from '../../../assets/default-profile-image.png';
 import defaultHeaderImage from '../../../assets/default-header-image.png';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "../../../redux/features/userSlice";
 
 const Profile = () => {
-  const [isCustomer, setIsCustomer] = useState(true);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.data);
+  const role = useSelector((state) => state.user.role);
+  const status = useSelector((state) => state.user.status);
+  const error = useSelector((state) => state.user.error);
+
   const [profileImage, setProfileImage] = useState(null);
   const [headerImage, setHeaderImage] = useState(null);
+
+  useEffect(() => {
+    dispatch(fetchUser());
+  }, [dispatch]);
 
   useEffect(() => {
     const loadImages = async () => {
@@ -49,15 +60,6 @@ const Profile = () => {
     }
   };
 
-  const profileData = {
-    firstName: 'Ferdy',
-    lastName: 'Fermadi',
-    displayName: 'Apeng',
-    email: 'ferdy.fermadi99@gmail.com',
-    gender: 'Man',
-    birthdate: '09/09/1998',
-    phoneNumber: '081234567890'
-  };
 
   const handlePress = (product) => {
     router.push('detailProduct', { product });
@@ -67,6 +69,25 @@ const Profile = () => {
     setIsCustomer(prevState => !prevState); 
   };
 
+  if (status === 'loading') {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+
+  if (status === 'failed') {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>Error: {error}</Text>
+      </View>
+    );
+  }
+
+  if (status === 'succeeded' && user) {
+    const isCustomer = role.includes('ROLE_CUSTOMER');
+   
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
@@ -90,7 +111,7 @@ const Profile = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.profileInfo}>
-        <Text style={styles.displayName}>{profileData.displayName}</Text>
+        <Text style={styles.displayName}>{user.displayName}</Text>
         <Button title="Edit Profile" onPress={toggleProfileMode} />
       </View>
 
@@ -101,34 +122,34 @@ const Profile = () => {
             <View style={styles.tableContainer}>
               <View style={styles.tableRow}>
                 <Text style={styles.tableHeader}>First Name:</Text>
-                <Text style={styles.tableData}>{profileData.firstName}</Text>
+                <Text style={styles.tableData}>{user.firstName}</Text>
               </View>
               <View style={styles.tableRow}>
                 <Text style={styles.tableHeader}>Last Name:</Text>
-                <Text style={styles.tableData}>{profileData.lastName}</Text>
+                <Text style={styles.tableData}>{user.lastName}</Text>
               </View>
               <View style={styles.tableRow}>
                 <Text style={styles.tableHeader}>Display Name:</Text>
-                <Text style={styles.tableData}>{profileData.displayName}</Text>
+                <Text style={styles.tableData}>{user.displayName}</Text>
               </View>
-              <View style={styles.tableRow}>
+              {/* <View style={styles.tableRow}>
                 <Text style={styles.tableHeader}>Gender:</Text>
-                <Text style={styles.tableData}>{profileData.gender}</Text>
-              </View>
+                <Text style={styles.tableData}>{user.gender}</Text>
+              </View> */}
               <View style={styles.tableRow}>
                 <Text style={styles.tableHeader}>Birthdate:</Text>
-                <Text style={styles.tableData}>{profileData.birthdate}</Text>
+                <Text style={styles.tableData}>{user.birthdate}</Text>
               </View>
             </View>
             <Text style={styles.sectionTitle}>Kontak</Text>
             <View style={styles.tableContainer}>
               <View style={styles.tableRow}>
                 <Text style={styles.tableHeader}>Email:</Text>
-                <Text style={styles.tableData}>{profileData.email}</Text>
+                <Text style={styles.tableData}>{user.email}</Text>
               </View>
               <View style={styles.tableRow}>
                 <Text style={styles.tableHeader}>Phone Number:</Text>
-                <Text style={styles.tableData}>{profileData.phoneNumber}</Text>
+                <Text style={styles.tableData}>{user.phoneNumber}</Text>
               </View>
             </View>
           </View>
@@ -141,7 +162,7 @@ const Profile = () => {
           </Text>
           <View style={styles.emailContainer}>
             <Ionicons name="mail" size={18} color="#333" />
-            <Text style={styles.emailText}>{profileData.email}</Text>
+            <Text style={styles.emailText}>{user.email}</Text>
           </View>
           <View style={styles.bestSellerContainer}>
             <CardProduct 
@@ -178,6 +199,7 @@ const Profile = () => {
     </ScrollView>
   );
 };
+}
 
 const styles = StyleSheet.create({
   container: {
