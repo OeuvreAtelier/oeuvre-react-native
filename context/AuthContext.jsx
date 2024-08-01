@@ -13,6 +13,7 @@ const initialState = {
 const initializeState = async () => {
   try {
     const token = await AsyncStorage.getItem("token");
+    console.log(token)
     const username = await AsyncStorage.getItem("username");
     const isLoggedIn = !!token;
 

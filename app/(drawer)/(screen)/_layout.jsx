@@ -2,6 +2,7 @@ import { Stack, useNavigation } from "expo-router";
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import EditProfile from "./editProfile"
 
 export const unstable_settings = {
     initialRoutename: '/index',
@@ -38,7 +39,16 @@ export default function ScreenLayout() {
                 <Ionicons name="arrow-back" size={28} color="#000" />
               </TouchableOpacity>
             ),}} />
-            <Stack.Screen name="detailProduct" options={{title: "Detail Product", headerLeft: () => (
+            {/* <Stack.Screen name="detailProduct" options={{title: "Detail Product", headerLeft: () => (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.goBack();
+                }}>
+                <Ionicons name="arrow-back" size={28} color="#000" />
+              </TouchableOpacity>),
+                headerShown:false,
+            }} /> */}
+            <Stack.Screen name="editProfile" options={{title: "Edit profile", headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
                   navigation.goBack(unstable_settings);
@@ -47,6 +57,7 @@ export default function ScreenLayout() {
               </TouchableOpacity>),
                 headerShown:false,
             }} />
+            
             <Stack.Screen name="cart" options={{title: "Cart", headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
