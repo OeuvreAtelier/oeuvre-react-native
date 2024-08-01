@@ -6,7 +6,7 @@ const CardProduct = ({ category, name, seller, price, image, onPress }) => {
 
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Image source={{ uri: "https://via.placeholder.com/100" }} style={styles.image} />
+      <Image src={ image || "https://ik.imagekit.io/muffincrunchy/oeuvre-images/user-picture/default_picture.jpg" } style={styles.image} />
       <Text>{category}</Text>
       <Text>{name}</Text>
       <Text>{seller}</Text>

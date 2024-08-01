@@ -33,11 +33,15 @@ const Home = () => {
     }, [dispatch]);
 
     const handlePress = (product) => {
-        router.push({ pathname: 'detailProduct', params: { product } });
+        router.push({ pathname: 'detailProduct', params: {
+            ...product,
+            description: JSON.stringify(product.description),
+            image: JSON.stringify(product.image),
+        } });
     };
 
     const handleCategoryPress = (category) => {
-        router.push({ pathname: 'discovery', params: { category } });
+        router.push({ pathname: 'discovery', params: category });
     };
 
     return (
@@ -62,7 +66,7 @@ const Home = () => {
                         name={item.name}
                         seller={item.seller}
                         price={item.price}
-                        image={item.image}
+                        image={item.image.path}
                         onPress={() => handlePress(item)}
                     />
                 ))}
@@ -77,7 +81,7 @@ const Home = () => {
                         name={item.name}
                         seller={item.seller}
                         price={item.price}
-                        image={item.image}
+                        image={item.image.path}
                         onPress={() => handlePress(item)}
                     />
                 ))}

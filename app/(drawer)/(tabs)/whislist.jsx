@@ -1,46 +1,52 @@
 import React from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
+import { View, ScrollView, StyleSheet, Text } from "react-native";
 import CardProduct from "../../../components/CardProduct";
-import { router } from "expo-router";
+import { useRouter } from "expo-router";
+import { useSelector } from 'react-redux';
+
 
 const Wishlist = () => {
+    const products = useSelector((state) => state.products.data);
+    const router = useRouter();
 
     const handlePress = (product) => {
-        router.push('detailProduct', { product });
+        router.push({ pathname: 'detailProduct', params: {
+            ...product,
+            description: JSON.stringify(product.description),
+            image: JSON.stringify(product.image),
+        } });
     };
 
-  return (
-    <ScrollView style={styles.container}>
-        <View style={styles.cardProductList}>
-        <CardProduct 
-          category="Category" 
-          name="Product 1" 
-          seller="Seller 1" 
-          price="$100" 
-          onPress={() => handlePress({ category: 'Category', name: 'Product 1', seller: 'Seller 1', price: '$100' })}
-        />
-        <CardProduct 
-          category="Category" 
-          name="Product 2" 
-          seller="Seller 2" 
-          price="$200" 
-          onPress={() => handlePress({ category: 'Category', name: 'Product 2', seller: 'Seller 2', price: '$200' })}
-        />
-        </View>
-    </ScrollView>
-  );
+    return (
+        <ScrollView style={styles.container}>
+            <Text>Bookmarks</Text>
+            <View style={styles.cardProductList}>
+                {products && products.map(item => (
+                    <CardProduct
+                        key={item.id}
+                        category={item.category}
+                        name={item.name}
+                        seller={item.seller}
+                        price={item.price}
+                        image={item.image.path}
+                        onPress={() => handlePress(item)}
+                    />
+                ))}
+            </View>
+        </ScrollView>
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f8f8f8",
-    padding: 10,
-  },
-  cardProductList: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
+    container: {
+        flex: 1,
+        backgroundColor: "#f8f8f8",
+        padding: 10,
+    },
+    cardProductList: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+    },
 });
 
 export default Wishlist;

@@ -17,7 +17,7 @@ const CustomDrawerContent = (props) => {
       <DrawerContentScrollView {...props}>
         <View style={styles.userInfoWrapper}>
           <Image
-            source={{ uri: "https://randomuser.me/api/portraits/men/26.jpg" }}
+            src="https://randomuser.me/api/portraits/men/26.jpg"
             width={80}
             height={80}
             style={styles.userImg}
