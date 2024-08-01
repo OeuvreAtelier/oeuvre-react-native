@@ -1,7 +1,9 @@
 import React from "react";
 import { Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
-const CardProduct = ({ category, name, seller, price, onPress }) => {
+const CardProduct = ({ category, name, seller, price, image, onPress }) => {
+
+
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <Image source={{ uri: "https://via.placeholder.com/100" }} style={styles.image} />
