@@ -35,7 +35,7 @@ export default function AddressScreen() {
     <View style={styles.container}>
       <FlatList
         data={addresses}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.addressItem}>
             <Text>{item.detail}</Text>

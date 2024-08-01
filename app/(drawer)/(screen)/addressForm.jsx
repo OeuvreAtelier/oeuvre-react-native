@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createAddress, updateAddress } from '../../../redux/features/addressSlice';
 import {
   View,
@@ -11,8 +11,7 @@ import {
 } from 'react-native';
 
 export default function AddressForm({ onClose, initialData }) {
-
-
+  const userId = useSelector((state) => state.user.data.id)
   const [formData, setFormData] = useState(initialData || {});
   const dispatch = useDispatch();
 
@@ -29,6 +28,7 @@ export default function AddressForm({ onClose, initialData }) {
         phoneNumber: initialData.phoneNumber || '',
       });
     }
+   
   }, [initialData]);
 
   const handleChange = (name, value) => {
@@ -42,14 +42,15 @@ export default function AddressForm({ onClose, initialData }) {
 
   const handleSubmit = async () => {
     try {
-      const action =
-        formData.id === undefined ? createAddress(formData) : updateAddress(formData);
+      const dataToSubmit = { ...formData, userId }; // Pastikan userId ada di data yang dikirim
+      const action = formData.id ? updateAddress(dataToSubmit) : createAddress(dataToSubmit);
       await dispatch(action).unwrap();
-      onClose();
+      onClose();  // Menutup form setelah sukses
     } catch (error) {
       console.error('Error submitting form:', error);
     }
   };
+  
 
   return (
     <View style={styles.overlay}>

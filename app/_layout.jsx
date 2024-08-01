@@ -9,21 +9,20 @@ export default function RootLayout() {
     return (
         <AuthProvider>
             <Provider store={store}>
-            <Stack>
-              <Stack.Screen 
-              name="(drawer)" 
-              options={{
-                  headerShown: false
-                  , header: () => <CustomHeader />
-              }}/>
-              <Stack.Screen
-              name="(auth)"
-              options={{
-                  headerShown: false
-              }} />
-          </Stack>
+                <Stack>
+                    <Stack.Screen
+                        name="(drawer)"
+                        options={{
+                            headerShown: false
+                            , header: () => <CustomHeader />
+                        }} />
+                    <Stack.Screen
+                        name="(auth)"
+                        options={{
+                            headerShown: false
+                        }} />
+                </Stack>
             </Provider>
-          
         </AuthProvider>
     )
 }
