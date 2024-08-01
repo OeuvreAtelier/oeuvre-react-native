@@ -11,9 +11,20 @@ const DetailProduct = () => {
     const navigation = useNavigation();
     const router = useRouter();
     const product = useLocalSearchParams();
+    const [wishlist, setWishlist] = useState([]);
+    const description = JSON.parse(product.description);
+    const image = JSON.parse(product.image);
+
+console.log(product);
+    const addToWishlist = (product) => {
+        setWishlist([...wishlist, product]);
+    };
 
     const handleHeartClick = () => {
         setIsHeartClicked(!isHeartClicked);
+        if (!isHeartClicked) {
+            addToWishlist(product)            
+        }
     };
 
     const headerOpacity = scrollY.interpolate({
@@ -45,7 +56,7 @@ const DetailProduct = () => {
                 )}
                 scrollEventThrottle={16}
             >
-                <Image source={{ uri: "https://via.placeholder.com/300" }} style={styles.image} />
+                <Image source={{ uri: image.path }} style={styles.image} />
                 <View style={styles.bodyContainer}>
                     <View style={styles.titleContainer}>
                         <Text style={styles.title}>{product.name}</Text>
@@ -61,7 +72,7 @@ const DetailProduct = () => {
                     <Text style={styles.subtitle}>{product.category}</Text>
                     <Text style={styles.price}>{product.price}</Text>
                     <Text style={styles.description}>Detail Product</Text>
-                    <Text style={styles.longText}>{product.description}</Text>
+                    <Text style={styles.longText}>{description.description}</Text>
                 </View>
             </ScrollView>
             <View style={styles.footer}>

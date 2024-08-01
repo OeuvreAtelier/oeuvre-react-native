@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 const Product = ({ name, quantity, price, onPress }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Image source={{ uri: "https://via.placeholder.com/50" }} style={styles.image} />
+      <Image src="https://via.placeholder.com/50" style={styles.image} />
       <View style={styles.details}>
         <Text>{name}</Text>
         <Text>{quantity}</Text>

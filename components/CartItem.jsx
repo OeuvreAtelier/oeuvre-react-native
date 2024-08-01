@@ -19,7 +19,7 @@ const CartItem = ({ product }) => {
   return (
     <View style={styles.container}>
       <View style={styles.checkbox} />
-      <Image source={{ uri: product.image }} style={styles.image} />
+      <Image src={product.image} style={styles.image} />
       <View style={styles.details}>
         <Text style={styles.name}>{product.name}</Text>
         <Text style={styles.price}>{product.price}</Text>
