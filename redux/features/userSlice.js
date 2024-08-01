@@ -11,6 +11,7 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async (_, { rejectWi
     }
 
     const decoded = jwtDecode(token);
+    console.log(decoded)
    const user_account_id = decoded.sub;
    
     const response = await axiosInstance.get(`/users/account/${user_account_id}`);
