@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axiosInstance from '../../api/axiosInstance';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {jwtDecode} from 'jwt-decode';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { jwtDecode } from 'jwt-decode';
+import axiosInstance from '../../api/axiosInstance';
 
 export const fetchUser = createAsyncThunk('user/fetchUser', async (_, { rejectWithValue }) => {
   try {
@@ -11,11 +11,11 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async (_, { rejectWi
     }
 
     const decoded = jwtDecode(token);
-    const user_account_id = decoded.sub;
-
+   const user_account_id = decoded.sub;
+   
     const response = await axiosInstance.get(`/users/account/${user_account_id}`);
     const userData = response.data.data;
-    const roles = userData.userAccount.roles.map(role => role.role);
+    const roles = decoded.roles.map(role => role.role);
 
     return { userData, roles };
   } catch (error) {
@@ -23,6 +23,60 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async (_, { rejectWi
     return rejectWithValue(error.response ? error.response.data : error.message);
   }
 });
+
+
+export const updateUser = createAsyncThunk('user/updateUser', async ({updatedData}, { rejectWithValue }) => {
+  try {
+    const token = await AsyncStorage.getItem("token");
+    if (!token) {
+      throw new Error("No token found");
+    }
+
+    const response = await axiosInstance.put(`/users`, updatedData, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const updatedUserData = response.data;
+
+    return updatedUserData;
+  } catch (error) {
+    console.error("Update User Error:", error);
+    return rejectWithValue(error.response ? error.response.data : error.message);
+  }
+});
+
+
+export const updateProfileImage = createAsyncThunk(
+  'user/updateProfileImage',
+  async ({ formData, type }) => {
+    const response = await axiosInstance.put(`users/picture`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    console.log(formData)
+    return response.data;
+  }
+);
+
+export const updateBanner = createAsyncThunk(
+  "user/updateUserBanner",
+  async (user, { rejectedWithValue }) => {
+    try {
+      const response = await axiosInstance.put("/users/banner", user, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      console.log(user)
+      return response.data
+    } catch (error) {
+      return rejectedWithValue(error.response.data)
+    }
+  }
+)
+
+
 
 const userSlice = createSlice({
   name: 'user',
@@ -35,19 +89,28 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUser.pending, (state) => {
-        state.status = 'loading';
-      })
       .addCase(fetchUser.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.data = action.payload.userData;
         state.role = action.payload.roles;
       })
-      .addCase(fetchUser.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
-      });
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.data = action.payload;
+      })
+      .addCase(updateProfileImage.fulfilled, (state, action) => {
+        state.statusCode = "succeeded"
+        state.data = action.payload.data
+        state.message = action.payload.message
+      })
+      .addMatcher(
+        (action) => action.type.endsWith("/rejected"),
+        (state, action) => {
+          state.error = action.payload
+          state.status = "failed"
+        }
+      )
   },
-});
+})
 
 export default userSlice.reducer;

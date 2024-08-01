@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Button, Image, ScrollView, StyleSheet, Text, View, TouchableOpacity, ActivityIndicator } from "react-native";
-import CardProduct from "../../../components/CardProduct";
-import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import defaultProfileImage from '../../../assets/default-profile-image.png';
-import defaultHeaderImage from '../../../assets/default-header-image.png';
+import * as ImagePicker from 'expo-image-picker';
+import { router } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Button, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import defaultHeaderImage from '../../../assets/default-header-image.png';
+import defaultProfileImage from '../../../assets/default-profile-image.png';
+import CardProduct from "../../../components/CardProduct";
 import { fetchUser } from "../../../redux/features/userSlice";
 
 const Profile = () => {
@@ -16,9 +16,20 @@ const Profile = () => {
   const role = useSelector((state) => state.user.role);
   const status = useSelector((state) => state.user.status);
   const error = useSelector((state) => state.user.error);
+  const [isArtist, setIsArtist] = useState(true)
+  // const [isCustomer, setIsCustomer] = useState(false)
 
   const [profileImage, setProfileImage] = useState(null);
   const [headerImage, setHeaderImage] = useState(null);
+
+  
+  const handleEditProfile = (updatedData) => {
+    if (user) {
+      router.push('editProfile', {updatedData});
+    } else {
+      console.error('User data not available');
+    }
+  };
 
   useEffect(() => {
     dispatch(fetchUser());
@@ -59,14 +70,30 @@ const Profile = () => {
     }
   };
 
+  useEffect(() => {
+    if (role.includes('ROLE_ARTIST')) {
+      setIsArtist(true);
+    } else {
+      setIsArtist(false);
+    }
+  }, [role]);
+
+  // useEffect(() => {
+  //   if (role.includes('ROLE_ARTIST')) {
+  //     setIsArtist(true);
+  //   } else {
+  //     setIsArtist(false);
+  //   }
+  // }, [role]);
+
 
   const handlePress = (product) => {
     router.push('detailProduct', { product });
   };
 
-  const toggleProfileMode = () => {
-    setIsCustomer(prevState => !prevState); 
-  };
+  // const toggleProfileMode = () => {
+  //   setIsArtist(prevState => !prevState); 
+  // };
 
   if (status === 'loading') {
     return (
@@ -85,7 +112,7 @@ const Profile = () => {
   }
 
   if (status === 'succeeded' && user) {
-    const isCustomer = role.includes('ROLE_CUSTOMER');
+    console.log(user)
    
   return (
     <ScrollView style={styles.container}>
@@ -111,10 +138,10 @@ const Profile = () => {
       </View>
       <View style={styles.profileInfo}>
         <Text style={styles.displayName}>{user.displayName}</Text>
-        <Button title="Edit Profile" onPress={toggleProfileMode} />
+        <Button title="Edit Profile" onPress={handleEditProfile}/>
       </View>
 
-      {isCustomer ? (
+      {!isArtist ? (
         <View style={styles.profileDetailsContainer}>
           <View style={styles.profileDetails}>
             <Text style={styles.sectionTitle}>Data Diri</Text>
@@ -131,13 +158,13 @@ const Profile = () => {
                 <Text style={styles.tableHeader}>Display Name:</Text>
                 <Text style={styles.tableData}>{user.displayName}</Text>
               </View>
-              {/* <View style={styles.tableRow}>
+               <View style={styles.tableRow}>
                 <Text style={styles.tableHeader}>Gender:</Text>
                 <Text style={styles.tableData}>{user.gender}</Text>
-              </View> */}
+              </View> 
               <View style={styles.tableRow}>
                 <Text style={styles.tableHeader}>Birthdate:</Text>
-                <Text style={styles.tableData}>{user.birthdate}</Text>
+                <Text style={styles.tableData}>{user.birthDate}</Text>
               </View>
             </View>
             <Text style={styles.sectionTitle}>Kontak</Text>
