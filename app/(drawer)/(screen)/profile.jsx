@@ -22,7 +22,7 @@ const Profile = () => {
   const [profileImage, setProfileImage] = useState(null);
   const [headerImage, setHeaderImage] = useState(null);
 
-  
+  console.log(user)
   const handleEditProfile = (updatedData) => {
     if (user) {
       router.push('editProfile', {updatedData});
@@ -129,7 +129,8 @@ const Profile = () => {
       </View>
       <View style={styles.profileImageContainer}>
         <Image 
-          source={profileImage ? { uri: profileImage } : defaultProfileImage} 
+          src="https://ik.imagekit.io/muffincrunchy/oeuvre-images/user-picture/78bb4477-8683-4bab-95f2-744ed1051b79-ks_amc_eedbS.jpeg"
+          // source={profileImage ? { uri: profileImage } : defaultProfileImage} 
           style={styles.profileImage} 
         />
         <TouchableOpacity style={styles.editPhotoContainerProfile} onPress={() => pickImage('profile')}>

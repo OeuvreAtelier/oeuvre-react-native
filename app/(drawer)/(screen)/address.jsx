@@ -3,29 +3,24 @@ import React, { useEffect } from 'react';
 import { View, Text, FlatList, Button, StyleSheet } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { useRouter } from 'expo-router';
-import { fetchUser } from '../../../redux/features/userSlice';
 import { fetchAddressByUserId } from '../../../redux/features/addressSlice';
 
 export default function AddressScreen() {
   const dispatch = useDispatch();
-  const router = useRouter(); 
-  const user = useSelector((state) => state.user.data);
-  const addresses = useSelector((state) => state.address);
+  const router = useRouter();
+  const addresses = useSelector((state) => state.address.data);
+  const userId = useSelector((state) => state.user.data.id)
 
   useEffect(() => {
-    dispatch(fetchUser())
-    if(user){
-
-        dispatch(fetchAddressByUserId(user.id
-        ))
-    }
+    dispatch(fetchAddressByUserId(userId))
+    console.log(userId);
   }, [dispatch])
 
 
-  const handleEdit = (address) => {
+  const handleEdit = (addresses) => {
     router.push({
       pathname: 'addressForm',
-      params: { state: JSON.stringify({ address }) },
+      params: { state: JSON.stringify({ addresses }) },
     });
   };
 
@@ -44,6 +39,11 @@ export default function AddressScreen() {
         renderItem={({ item }) => (
           <View style={styles.addressItem}>
             <Text>{item.detail}</Text>
+            <Text>{item.state}</Text>
+            <Text>{item.city}</Text>
+            <Text>{item.country}</Text>
+            <Text>{item.phoneNumber}</Text>
+            <Text>{item.postalCode}</Text>
             <Button title="Edit" onPress={() => handleEdit(item)} />
           </View>
         )}

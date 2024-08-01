@@ -5,13 +5,6 @@ export const fetchAddressByUserId = createAsyncThunk(
   "address/fetchAddressByUserId",
   async (userId, { rejectedWithValue }) => {
     try {
-      const token = await AsyncStorage.getItem("token");
-    if (!token) {
-      throw new Error("No token found");
-    }
-
-    const decoded = jwtDecode(token);
-   const user_account_id = decoded.sub;
       const response = await axiosInstance.get(`/addresses/user/${userId}`)
       return response.data
     } catch (error) {
@@ -51,7 +44,8 @@ export const deleteAddress = createAsyncThunk(
   async (id, { rejectedWithValue }) => {
     try {
       const response = await axiosInstance.delete(`/addresses/${id}`)
-      return response.data
+      const address = response.data.user.store.address
+      return address
     } catch (error) {
       return rejectedWithValue(error.response.data)
     }
@@ -86,7 +80,7 @@ const addressSlice = createSlice({
         state.status = "succeeded"
       })
       .addCase(deleteAddress.fulfilled, (state, action) => {
-        state.data = state.data.filter((merch) => merch.id !== action.meta.arg)
+        state.data = state.data.filter((address) => address.id !== action.meta.arg)
         state.status = "succeeded"
       })
       .addMatcher(

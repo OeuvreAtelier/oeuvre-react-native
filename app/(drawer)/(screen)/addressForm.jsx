@@ -12,6 +12,7 @@ import {
 
 export default function AddressForm({ onClose, initialData }) {
 
+
   const [formData, setFormData] = useState(initialData || {});
   const dispatch = useDispatch();
 
@@ -36,6 +37,8 @@ export default function AddressForm({ onClose, initialData }) {
       [name]: value,
     });
   };
+
+  console.log(formData)
 
   const handleSubmit = async () => {
     try {
