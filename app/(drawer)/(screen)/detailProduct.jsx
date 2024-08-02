@@ -47,16 +47,16 @@ console.log(product);
         <SafeAreaView style={styles.safeContainer}>
             <Animated.View style={[styles.backButton, { opacity: headerOpacity }]}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
-                    <Ionicons name="arrow-back" size={24} color="black" />
+                    <Ionicons name="arrow-back" size={24} color="#fff" />
                 </TouchableOpacity>
             </Animated.View>
             <Animated.View style={[styles.cartButton, { opacity: headerOpacity }]}>
                 <TouchableOpacity onPress={() => { router.push("/cart") }}>
-                    <Ionicons name="cart" size={24} color="black" />
+                    <Ionicons name="cart" size={24} color="#fff" />
                 </TouchableOpacity>
             </Animated.View>
             <Animated.View style={[styles.menuButton, { opacity: headerOpacity }]}>
-                <DrawerToggleButton tintColor="#000" />
+                <DrawerToggleButton tintColor="#fff" />
             </Animated.View>
             <ScrollView
                 contentContainerStyle={styles.contentContainer}

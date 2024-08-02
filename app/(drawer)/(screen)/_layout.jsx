@@ -12,14 +12,14 @@ export default function ScreenLayout() {
     const navigation = useNavigation();
 
     return (
-        <Stack screenOptions={{ headerRight: () => <DrawerToggleButton tintColor="#000" />, headerBackVisible:false, headerTitleAlign: "center"}}>
-            <Stack.Screen name="profile" 
+        <Stack screenOptions={{ tintColor:'#3730a3', statusBarColor:"#3730a3", headerRight: () => <DrawerToggleButton tintColor="#3730a3" />, headerBackVisible:false, headerTitleAlign: "center"}}>
+            <Stack.Screen name="profile"
             options={{title:"Profile", headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
                   navigation.goBack(unstable_settings);
                 }}>
-                <Ionicons name="arrow-back" size={28} color="#000" />
+                <Ionicons name="arrow-back" size={28} color="#3730a3" />
               </TouchableOpacity>)
             }}/>
             <Stack.Screen name="about" 
@@ -28,7 +28,7 @@ export default function ScreenLayout() {
                 onPress={() => {
                   navigation.goBack(unstable_settings);
                 }}>
-                <Ionicons name="arrow-back" size={28} color="#000" />
+                <Ionicons name="arrow-back" size={28} color="#3730a3" />
               </TouchableOpacity>
             ), }}/>
             <Stack.Screen name="address" options={{title: "Address", headerLeft: () => (
@@ -36,34 +36,34 @@ export default function ScreenLayout() {
                 onPress={() => {
                   navigation.goBack(unstable_settings);
                 }}>
-                <Ionicons name="arrow-back" size={28} color="#000" />
+                <Ionicons name="arrow-back" size={28} color="#3730a3" />
               </TouchableOpacity>
             ),}} />
-            {/* <Stack.Screen name="detailProduct" options={{title: "Detail Product", headerLeft: () => (
+            <Stack.Screen name="detailProduct" options={{title: "Detail Product", headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
                   navigation.goBack();
                 }}>
-                <Ionicons name="arrow-back" size={28} color="#000" />
+                <Ionicons name="arrow-back" size={28} color="#3730a3" />
               </TouchableOpacity>),
                 headerShown:false,
-            }} /> */}
+            }} />
             <Stack.Screen name="editProfile" options={{title: "Edit profile", headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
                   navigation.goBack(unstable_settings);
                 }}>
-                <Ionicons name="arrow-back" size={28} color="#000" />
+                <Ionicons name="arrow-back" size={28} color="#3730a3" />
               </TouchableOpacity>),
                 headerShown:false,
             }} />
-            
+            <Stack.Screen name="addressForm" options={{headerShown: false}} /> 
             <Stack.Screen name="cart" options={{title: "Cart", headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {
                   navigation.goBack(unstable_settings);
                 }}>
-                <Ionicons name="arrow-back" size={28} color="#000" />
+                <Ionicons name="arrow-back" size={28} color="#3730a3" />
               </TouchableOpacity>
             ),}} />
         </Stack>

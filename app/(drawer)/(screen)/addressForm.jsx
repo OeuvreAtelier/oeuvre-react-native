@@ -8,98 +8,113 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
+  Alert,
 } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 
-export default function AddressForm({ onClose, initialData }) {
-  const userId = useSelector((state) => state.user.data.id)
-  const [formData, setFormData] = useState(initialData || {});
+export default function AddressForm() {
   const dispatch = useDispatch();
+  const router = useRouter();
+  const address  = useLocalSearchParams();
+  const userId = useSelector((state) => state.user.data.id);
+
+  const [id, setId] = useState('');
+  const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
+  const [detail, setDetail] = useState('');
+  const [postalCode, setPostalCode] = useState('');
+  const [state, setState] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
 
   useEffect(() => {
-    if (initialData) {
-      setFormData({
-        id: initialData.id || '',
-        userId: initialData.userId || '',
-        country: initialData.country || '',
-        state: initialData.state || '',
-        city: initialData.city || '',
-        detail: initialData.detail || '',
-        postalCode: initialData.postalCode || '',
-        phoneNumber: initialData.phoneNumber || '',
-      });
+    if (address) {
+      setId(address.id);
+      setCountry(address.country);
+      setCity(address.city);
+      setDetail(address.detail);
+      setState(address.state);
+      setPostalCode(address.postalCode);
+      setPhoneNumber(address.phoneNumber);
     }
-   
-  }, [initialData]);
-
-  const handleChange = (name, value) => {
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  console.log(formData)
+  }, []);
 
   const handleSubmit = async () => {
+    const data = {
+      id: id,
+      userId: userId,
+      country: country,
+      city: city,
+      detail: detail,
+      state: state,
+      postalCode: postalCode,
+      phoneNumber: phoneNumber,
+    };
+
     try {
-      const dataToSubmit = { ...formData, userId }; // Pastikan userId ada di data yang dikirim
-      const action = formData.id ? updateAddress(dataToSubmit) : createAddress(dataToSubmit);
-      await dispatch(action).unwrap();
-      onClose();  // Menutup form setelah sukses
-    } catch (error) {
-      console.error('Error submitting form:', error);
+      if (id) {
+        await dispatch(updateAddress(data)).unwrap(); 
+      } else {
+        await dispatch(createAddress(data)).unwrap();
+      }
+      router.push('address'); 
+      Alert.alert('Success to save address')
+    } catch (err) {
+      Alert.alert('Failed to save address', err.message);
     }
   };
-  
+
+  const handleClose = () => {
+    router.back();
+  };
 
   return (
     <View style={styles.overlay}>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+        <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
           <Text style={styles.closeButtonText}>X</Text>
         </TouchableOpacity>
         <Text style={styles.title}>
-          {formData.id ? 'Edit Address' : 'Add Address'}
+          {id ? 'Edit Address' : 'Add Address'}
         </Text>
         <ScrollView style={styles.form}>
           <TextInput
             style={styles.input}
             placeholder="Country/Region"
-            value={formData.country}
-            onChangeText={(text) => handleChange('country', text)}
+            value={country}
+            onChangeText={setCountry}
           />
           <TextInput
             style={styles.input}
             placeholder="State/Province"
-            value={formData.state}
-            onChangeText={(text) => handleChange('state', text)}
+            value={state}
+            onChangeText={setState}
           />
           <TextInput
             style={styles.input}
             placeholder="City"
-            value={formData.city}
-            onChangeText={(text) => handleChange('city', text)}
+            value={city}
+            onChangeText={setCity}
           />
           <TextInput
             style={styles.textarea}
             placeholder="Detailed Address"
-            value={formData.detail}
+            value={detail}
             multiline
             numberOfLines={4}
-            onChangeText={(text) => handleChange('detail', text)}
+            onChangeText={setDetail}
           />
           <TextInput
             style={styles.input}
             placeholder="Postal/Zip Code"
-            value={formData.postalCode}
-            onChangeText={(text) => handleChange('postalCode', text)}
+            value={postalCode}
+            onChangeText={setPostalCode}
           />
           <TextInput
             style={styles.input}
             placeholder="Phone Number"
             keyboardType="numeric"
-            value={formData.phoneNumber}
-            onChangeText={(text) => handleChange('phoneNumber', text)}
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
           />
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
             <Text style={styles.submitButtonText}>Submit</Text>

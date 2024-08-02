@@ -1,37 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, ScrollView, FlatList, TouchableOpacity, Button } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProduct } from '../../../redux/features/productSlice';
 import { fetchProductsByNameCategoryAndType } from '../../../redux/features/productSlice';
 import CardProduct from '../../../components/CardProduct';
-import { Link, useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
-
 import Modal from 'react-native-modal';
 
 const Discovery = () => {
     const dispatch = useDispatch();
     const products = useSelector((state) => state.products.data);
     const router = useRouter();
+    const { category } = useLocalSearchParams(); // Mengambil parameter kategori jika ada
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const [selectedCategory, setSelectedCategory] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState(category || '');
     const [selectedType, setSelectedType] = useState('');
     const [productName, setProductName] = useState('');
 
     useEffect(() => {
-        dispatch(fetchProduct());
-        // dispatch(fetchProductsByNameCategoryAndType({ productName: '', category: '', type: ''}));
-        console.log(products);
-    }, [dispatch]);
-
+        dispatch(fetchProductsByNameCategoryAndType({
+            productName: '',
+            category: selectedCategory,
+            type: '',
+        }));
+    }, [dispatch, selectedCategory]);
 
     const handlePress = (product) => {
-        router.push({ pathname: 'detailProduct', params: {
-            ...product,
-            description: JSON.stringify(product.description),
-            image: JSON.stringify(product.image),
-        } });
+        router.push({
+            pathname: 'detailProduct',
+            params: {
+                ...product,
+                description: JSON.stringify(product.description),
+                image: JSON.stringify(product.image),
+            }
+        });
     };
 
     const handleFilterPress = () => {
@@ -51,7 +54,6 @@ const Discovery = () => {
         closeModal();
     };
 
-
     const renderItemProduct = ({ item }) => (
         <CardProduct
             key={item.id}
@@ -62,13 +64,12 @@ const Discovery = () => {
             image={item.image.path}
             onPress={() => handlePress(item)}
         />
-
     );
 
     return (
         <ScrollView style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.heading}>Discover</Text>
+                <Text style={styles.heading}>Discovery</Text>
                 <TouchableOpacity onPress={handleFilterPress}>
                     <Ionicons name="filter" size={24} color="black" />
                 </TouchableOpacity>

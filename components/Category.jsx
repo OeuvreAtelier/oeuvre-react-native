@@ -1,10 +1,25 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
+import { useRouter } from "expo-router";
+import { fetchProductsByNameCategoryAndType } from '../redux/features/productSlice';
 
-const Category = ({ title, iconName, onPress }) => {
+const Category = ({ title, value, iconName }) => {
+    const dispatch = useDispatch();
+    const router = useRouter();
+
+    const handleCategorySelect = () => {
+        dispatch(fetchProductsByNameCategoryAndType({ category: value }));
+        
+        router.push({
+            pathname: 'discovery',
+            params: { category: value },
+        });
+    };
+
     return (
-        <TouchableOpacity onPress={onPress}>
+        <TouchableOpacity onPress={handleCategorySelect}>
             <View style={styles.container}>
                 <Ionicons name={iconName} size={18} color="#000" style={styles.icon} />
                 <Text style={styles.text}>{title}</Text>
