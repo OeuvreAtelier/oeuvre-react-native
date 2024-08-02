@@ -26,22 +26,11 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async (_, { rejectWi
 });
 
 
-export const updateUser = createAsyncThunk('user/updateUser', async ({updatedData}, { rejectWithValue }) => {
+export const updateUser = createAsyncThunk('user/updateUser', 
+  async (user, { rejectWithValue }) => {
   try {
-    const token = await AsyncStorage.getItem("token");
-    if (!token) {
-      throw new Error("No token found");
-    }
-
-    const response = await axiosInstance.put(`/users`, updatedData, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    const updatedUserData = response.data;
-
-    return updatedUserData;
+    const response = await axiosInstance.put(`/users`, user);
+    return response.data;    
   } catch (error) {
     console.error("Update User Error:", error);
     return rejectWithValue(error.response ? error.response.data : error.message);
@@ -84,7 +73,6 @@ const userSlice = createSlice({
   initialState: {
     data: null,
     role: [],
-    status: 'idle',
     error: null,
   },
   reducers: {},

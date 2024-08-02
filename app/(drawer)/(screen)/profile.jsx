@@ -24,7 +24,7 @@ const Profile = () => {
   console.log(user)
   const handleEditProfile = (updatedData) => {
     if (user) {
-      router.push('editProfile', {updatedData});
+      router.push({pathname: 'editProfile', params: { ...updatedData } });
     } else {
       console.error('User data not available');
     }
@@ -33,38 +33,21 @@ const Profile = () => {
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
-
-  useEffect(() => {
-    if(user.artist){
-        setIsArtist(true)
-      } else {
-        setIsArtist(false);
-      }
-    }, [user.artist]);
-
+  
     // useEffect(() => {
-    //   if (role == ('ROLE_ARTIST')) {
-    //     setIsArtist(true);
-    //   } else {
-    //     setIsArtist(false);
-    //   }
-    // }, [role]);
-
+    //   const fetchImages = async () => {
+    //     try {
+    //       const response = await axiosInstance.get('/users/picture'); 
+    //       setHeaderImage(response.data.headerImage);
+    //       const banner = await axiosInstance.get('/users/banner'); 
+    //       setProfileImage(banner.data.profileImage);
+    //     } catch (error) {
+    //       console.error('Error fetching images:', error);
+    //     }
+    //   };
   
-    useEffect(() => {
-      const fetchImages = async () => {
-        try {
-          const response = await axiosInstance.get('/users/picture'); 
-          setHeaderImage(response.data.headerImage);
-          const banner = await axiosInstance.get('/users/banner'); 
-          setProfileImage(banner.data.profileImage);
-        } catch (error) {
-          console.error('Error fetching images:', error);
-        }
-      };
-  
-      fetchImages();
-    }, []);
+    //   fetchImages();
+    // }, []);
   
     const pickImage = async (type) => {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -136,10 +119,10 @@ const Profile = () => {
       </View>
       <View style={styles.profileInfo}>
         <Text style={styles.displayName}>{user.displayName}</Text>
-        <Button title="Edit Profile" onPress={handleEditProfile}/>
+        <Button title="Edit Profile" onPress={() => handleEditProfile(user)}/>
       </View>
 
-      {!isArtist ? (
+      {user.isArtist ? (
         <View style={styles.profileDetailsContainer}>
           <View style={styles.profileDetails}>
             <Text style={styles.sectionTitle}>Data Diri</Text>
