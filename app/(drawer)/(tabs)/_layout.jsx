@@ -3,6 +3,7 @@ import { Tabs, router, useNavigation } from "expo-router";
 import React from "react";
 import { DrawerToggleButton } from '@react-navigation/drawer';
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import SearchBar from "../../../components/SearchBar";
 
 function CustomHeader({ headerRight, cartIcon }) {
   return (
@@ -13,15 +14,6 @@ function CustomHeader({ headerRight, cartIcon }) {
     </View>
   );
 }
-
-const SearchBar = () => (
-  <View style={styles.searchContainer}>
-    <View style={styles.searchSection}>
-      <Ionicons style={styles.searchIcon} name="search-outline" size={16} color="#ccc" />
-      <TextInput style={styles.input} placeholder="Catalog" placeholderTextColor="#ccc" />
-    </View>
-  </View>
-);
 
 export default function TabsLayout() {
 
@@ -42,7 +34,7 @@ export default function TabsLayout() {
       default:
         break;
     }
-    return <Ionicons name={name} size={size} color="#0ea5e9" />;
+    return <Ionicons name={name} size={size} color="#3730a3" />;
   }
 
   const CartIcon = () => {
@@ -82,9 +74,8 @@ export default function TabsLayout() {
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 30,
     height: 60,
-    backgroundColor: '#0ea5e9',
+    backgroundColor: '#3730a3',
     paddingHorizontal: 10,
     flexDirection: 'row',
     alignItems: 'center',

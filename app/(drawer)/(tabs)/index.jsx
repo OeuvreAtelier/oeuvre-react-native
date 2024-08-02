@@ -4,23 +4,22 @@ import Category from "../../../components/Category";
 import CardProduct from "../../../components/CardProduct"; 
 import { useRouter } from "expo-router";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchProduct } from '../../../redux/features/productSlice';
+import { fetchProduct, fetchProductsByNameCategoryAndType } from '../../../redux/features/productSlice';
 
 const categories = [
-    { id: '1', title: 'AUDIO', iconName: 'musical-notes' },
-    { id: '2', title: 'COSPLAY', iconName: 'body' },
-    { id: '3', title: 'FASHION', iconName: 'shirt' },
-    { id: '4', title: 'FIGURES', iconName: 'man' },
-    { id: '5', title: 'GAMES', iconName: 'game-controller' },
-    { id: '6', title: 'GOODS', iconName: 'gift' },
-    { id: '7', title: 'ILLUSTRATION', iconName: 'color-palette' },
-    { id: '8', title: 'NOVEL_BOOKS', iconName: 'book' },
-    { id: '9', title: 'MUSIC', iconName: 'musical-notes' },
-    { id: '10', title: 'PHOTOGRAPH', iconName: 'camera' },
-    { id: '11', title: 'SOFTWARE_HARDWARE', iconName: 'desktop' },
-    { id: '12', title: 'VIDEO', iconName: 'videocam' },
+    { id: '1', title: 'AUDIO', iconName: 'musical-notes', value: 'AUDIO' },
+    { id: '2', title: 'COSPLAY', iconName: 'body', value:"COSPLAY" },
+    { id: '3', title: 'FASHION', iconName: 'shirt', value:"FASHION" },
+    { id: '4', title: 'FIGURES', iconName: 'man', value:"FIGURES" },
+    { id: '5', title: 'GAMES', iconName: 'game-controller', value:"GAMES" },
+    { id: '6', title: 'GOODS', iconName: 'gift', value:"GOODS" },
+    { id: '7', title: 'ILLUSTRATION', iconName: 'color-palette', value:"ILLUSTRATION" },
+    { id: '8', title: 'NOVEL/BOOKS', iconName: 'book', value:"NOVEL_BOOKS" },
+    { id: '9', title: 'MUSIC', iconName: 'musical-notes', value:"MUSIC" },
+    { id: '10', title: 'PHOTOGRAPH', iconName: 'camera', value:"PHOTOGRAPH" },
+    { id: '11', title: 'SOFTWARE/HARDWARE', iconName: 'desktop', value:"SOFTWARE_HARDWARE" },
+    { id: '12', title: 'VIDEO', iconName: 'videocam', value:"VIDEO" },
 ];
-
 
 const Home = () => {
     const dispatch = useDispatch();
@@ -29,7 +28,6 @@ const Home = () => {
 
     useEffect(() => {
         dispatch(fetchProduct());
-        console.log(products);
     }, [dispatch]);
 
     const handlePress = (product) => {
@@ -41,22 +39,33 @@ const Home = () => {
     };
 
     const handleCategoryPress = (category) => {
-        router.push({ pathname: 'discovery', params: category });
+        dispatch(fetchProductsByNameCategoryAndType({ category }));
+        
+        router.push({
+            pathname: 'discovery',
+            params: { category },
+        });
     };
 
     return (
         <ScrollView style={styles.container}>
-        <Text style={styles.heading}>Categories</Text>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <FlatList
-                data={categories}
-                renderItem={({ item }) => <Category title={item.title} iconName={item.iconName}  onPress={() => handleCategoryPress(item.title)} />}
-                keyExtractor={(item) => item.id}
-                numColumns={6}
-                columnWrapperStyle={styles.row}
-                contentContainerStyle={styles.categoryContainer}
-            />
-        </ScrollView>
+            <Text style={styles.heading}>Categories</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <FlatList
+                    data={categories}
+                    renderItem={({ item }) => (
+                        <Category 
+                            title={item.title} 
+                            iconName={item.iconName}  
+                            onPress={() => handleCategoryPress(item.title)} 
+                        />
+                    )}
+                    keyExtractor={(item) => item.id}
+                    numColumns={6}
+                    columnWrapperStyle={styles.row}
+                    contentContainerStyle={styles.categoryContainer}
+                />
+            </ScrollView>
             <Text style={styles.heading}>Best Seller</Text>
             <View style={styles.productContainer}>
                 {products && products.map(item => (
