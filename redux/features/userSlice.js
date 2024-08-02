@@ -38,16 +38,22 @@ export const updateUser = createAsyncThunk('user/updateUser',
 });
 
 
-export const updateProfileImage = createAsyncThunk(
-  'user/updateProfileImage',
-  async ({ formData, type }) => {
-    const response = await axiosInstance.put(`users/picture`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-    console.log(formData)
-    return response.data;
+export const updateImage = createAsyncThunk(
+  "user/updateUserImage",
+  async (user, { rejectedWithValue }) => {
+    try {
+      const response = await axiosInstance.put("/users/picture", user, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      console.log("Response:", response.data)
+      return response.data
+    } catch (error) {
+      return rejectedWithValue(error.response.data)
+    }
   }
-);
+)
 
 export const updateBanner = createAsyncThunk(
   "user/updateUserBanner",
@@ -58,14 +64,12 @@ export const updateBanner = createAsyncThunk(
           "Content-Type": "multipart/form-data",
         },
       })
-      console.log(user)
       return response.data
     } catch (error) {
       return rejectedWithValue(error.response.data)
     }
   }
 )
-
 
 
 const userSlice = createSlice({
@@ -86,11 +90,6 @@ const userSlice = createSlice({
       .addCase(updateUser.fulfilled, (state, action) => {
         state.status = 'succeeded';
         state.data = action.payload;
-      })
-      .addCase(updateProfileImage.fulfilled, (state, action) => {
-        state.statusCode = "succeeded"
-        state.data = action.payload.data
-        state.message = action.payload.message
       })
       .addMatcher(
         (action) => action.type.endsWith("/rejected"),

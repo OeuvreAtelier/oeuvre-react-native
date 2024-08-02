@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, StyleSheet, Alert, ScrollView, Pressable } from 'react-native';
 import { Button, TextInput, Text } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser, updateUser } from '../../../redux/features/userSlice';
 import { router, useLocalSearchParams } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 const EditProfile = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -17,9 +19,10 @@ const EditProfile = ({ navigation, route }) => {
   const [lastName, setLastName] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [gender, setGender] = useState('');
-  const [birthDate, setBirthDate] = useState('');
+  const [birthDate, setBirthDate] = useState(new Date().toISOString().slice(0, 10));
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [showDate, setShowDate] = useState(false);
 
 
   useEffect(() => {
@@ -88,12 +91,37 @@ const EditProfile = ({ navigation, route }) => {
         onChangeText={setGender}
         style={styles.input}
       />
-      <TextInput
+      <View style={styles.dateInputContainer}>
+        <TextInput
+          label="Birth Date"
+          value={birthDate}
+          editable={false}
+          style={[styles.input, styles.dateInput]}
+        />
+        <Pressable onPress={() => setShowDate(true)} style={styles.iconContainer}>
+          <Ionicons name="calendar-outline" size={24} />
+        </Pressable>
+      </View>
+      {showDate && (
+        <RNDateTimePicker
+          value={new Date(birthDate)}
+          onChange={(event, selectedDate) => {
+            if (event.type === "set") {
+              const date = selectedDate || new Date(birthDate);
+              setBirthDate(date.toISOString().slice(0, 10));
+              setShowDate(false);
+            } else {
+              setShowDate(false);
+            }
+          }}
+        />
+      )}
+      {/* <TextInput
         label="Birth Date"
         value={birthDate}
         onChangeText={setBirthDate}
         style={styles.input}
-      />
+      /> */}
       <TextInput
         label="Email"
         value={email}
@@ -131,9 +159,21 @@ const styles = StyleSheet.create({
   input: {
     marginBottom: 15,
   },
+  dateInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  dateInput: {
+    flex: 1,
+  },
+  iconContainer: {
+    padding: 8,
+  },
   button: {
     marginTop: 10,
   },
 });
+
 
 export default EditProfile;
