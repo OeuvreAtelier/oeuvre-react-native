@@ -1,34 +1,43 @@
-import React, { useReducer, useState } from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import {increment, decrement} from "../redux/features/counterSlice"
 import { useDispatch, useSelector } from 'react-redux';
+import { updateCartItemQuantity, removeFromCart } from "../redux/features/cartSlice";
 
-const CartItem = ({ product }) => {
-
-  const count = useSelector((state) => state.counter.value)
+const CartItem = ({ product, onSelect, isSelected }) => {
   const dispatch = useDispatch();
-
+  const [quantity, setQuantity] = useState(product.quantity);
 
   const handleIncrement = () => {
-    dispatch(increment(1))
-  }
+    const newQuantity = quantity + 1;
+    setQuantity(newQuantity);
+    dispatch(updateCartItemQuantity({ id: product.id, quantity: newQuantity }));
+  };
 
   const handleDecrement = () => {
-    dispatch(decrement())
-  }
+    const newQuantity = quantity - 1;
+    if (newQuantity === 0) {
+      dispatch(removeFromCart({ id: product.id }));
+    } else {
+      setQuantity(newQuantity);
+      dispatch(updateCartItemQuantity({ id: product.id, quantity: newQuantity }));
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.checkbox} />
-      <Image src={product.image} style={styles.image} />
+      <TouchableOpacity onPress={onSelect}>
+        <View style={[styles.checkbox, isSelected && styles.checkboxSelected]} />
+      </TouchableOpacity>
+      <Image source={{ uri: product.image }} style={styles.image} />
       <View style={styles.details}>
         <Text style={styles.name}>{product.name}</Text>
-        <Text style={styles.price}>{product.price}</Text>
+        <Text style={styles.price}>Rp{product.price}</Text>
       </View>
       <View style={styles.quantityContainer}>
         <TouchableOpacity style={styles.button} onPress={handleDecrement}>
           <Text style={styles.buttonText}>-</Text>
         </TouchableOpacity>
-        <Text style={styles.quantity}>{count}</Text>
+        <Text style={styles.quantity}>{quantity}</Text>
         <TouchableOpacity style={styles.button} onPress={handleIncrement}>
           <Text style={styles.buttonText}>+</Text>
         </TouchableOpacity>
@@ -53,6 +62,9 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     marginRight: 10,
   },
+  checkboxSelected: {
+    backgroundColor: 'blue',
+  },
   image: {
     width: 50,
     height: 50,
@@ -68,9 +80,6 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 14,
     color: 'gray',
-  },
-  wishlist: {
-    marginRight: 10,
   },
   quantityContainer: {
     flexDirection: 'row',
@@ -90,10 +99,6 @@ const styles = StyleSheet.create({
   quantity: {
     marginHorizontal: 10,
     fontSize: 16,
-  },
-  countText: {
-    fontSize: 24,
-    marginBottom: 20,
   },
 });
 

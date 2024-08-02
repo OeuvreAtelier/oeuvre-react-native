@@ -1,44 +1,68 @@
-// screens/CartScreen.js
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
 import CartItem from '../../../components/CartItem';
-import CardProduct from '../../../components/CardProduct';
-import { router } from 'expo-router';
-
-
-const cartItems = [
-  { id: '1', name: 'Product 1', price: 'Rp120.000', image: 'https://via.placeholder.com/50' },
-];
-
-const recommendations = [
-  { id: '1', category: 'Category', name: 'Product 1', seller: 'Seller', price: 'Rp120.000', image: 'https://via.placeholder.com/100' },
-  { id: '2', category: 'Category', name: 'Product 2', seller: 'Seller', price: 'Rp120.000', image: 'https://via.placeholder.com/100' },
-  { id: '3', category: 'Category', name: 'Product 3', seller: 'Seller', price: 'Rp120.000', image: 'https://via.placeholder.com/100' },
-  { id: '4', category: 'Category', name: 'Product 4', seller: 'Seller', price: 'Rp120.000', image: 'https://via.placeholder.com/100' },
-];
+import { selectCartItems, selectCartTotal, removeFromCart, updateCartItemQuantity } from '../../../redux/features/cartSlice';
 
 const CartScreen = () => {
+  const dispatch = useDispatch();
+  const cartItems = useSelector(selectCartItems);
+  const cartTotal = useSelector(selectCartTotal);
+  const [selectedItems, setSelectedItems] = useState([]);
+
+  const handleSelectItem = (id) => {
+    setSelectedItems((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((itemId) => itemId !== id)
+        : [...prevSelected, id]
+    );
+  };
+
+  const handleUpdateQuantity = (id, quantity) => {
+    dispatch(updateCartItemQuantity({ id, quantity }));
+  };
+
+  const calculateTotal = () => {
+    return cartItems.reduce((total, item) => {
+      if (selectedItems.includes(item.id)) {
+        return total + item.price * item.quantity;
+      }
+      return total;
+    }, 0);
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
         <Text style={styles.heading}>Cart</Text>
-        {cartItems.map((item) => (
-          <CartItem key={item.id} product={item} />
-        ))}
-        <Text style={styles.heading}>Rekomendasi</Text>
-        <View style={styles.recommendationsContainer}>
-          {recommendations.map((item) => (
-            <CardProduct category="Category" name="Product 1" seller="Seller 1" price="$100" />
-          ))}
-        </View>
+        {cartItems.length > 0 ? (
+          cartItems.map((item) => (
+            <CartItem
+              key={item.id}
+              product={item}
+              onSelect={() => handleSelectItem(item.id)}
+              onUpdateQuantity={(quantity) => handleUpdateQuantity(item.id, quantity)}
+              isSelected={selectedItems.includes(item.id)}
+            />
+          ))
+        ) : (
+          <Text>Cart is empty</Text>
+        )}
       </ScrollView>
       <View style={styles.footer}>
         <View style={styles.selectAll}>
-          <View style={styles.checkbox} />
+          <TouchableOpacity
+            onPress={() => {
+              const allSelected = selectedItems.length === cartItems.length;
+              setSelectedItems(allSelected ? [] : cartItems.map((item) => item.id));
+            }}
+          >
+            <View style={[styles.checkbox, selectedItems.length === cartItems.length && styles.checkboxSelected]} />
+          </TouchableOpacity>
           <Text>All</Text>
         </View>
         <Text style={styles.total}>Total</Text>
-        <Text style={styles.price}>Rp120.000</Text>
+        <Text style={styles.price}>Rp{calculateTotal()}</Text>
         <TouchableOpacity style={styles.buyButton}>
           <Text style={styles.buyButtonText}>Buy</Text>
         </TouchableOpacity>
@@ -61,11 +85,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 10,
   },
-  recommendationsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
   footer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -85,6 +104,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     marginRight: 10,
+  },
+  checkboxSelected: {
+    backgroundColor: 'blue',
   },
   total: {
     fontSize: 16,

@@ -114,9 +114,9 @@ const EditProfile = ({ navigation, route }) => {
       <Button mode="contained" onPress={handleUpdateProfile} style={styles.button}>
         Save Changes
       </Button>
-      <Button mode="outlined" onPress={() => navigation.goBack()} style={styles.button}>
+      {/* <Button mode="outlined" onPress={() => navigation.goBack()} style={styles.button}>
         Cancel
-      </Button>
+      </Button> */}
     </ScrollView>
   );
 };
