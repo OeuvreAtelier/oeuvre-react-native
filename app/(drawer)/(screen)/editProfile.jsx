@@ -3,86 +3,82 @@ import { View, StyleSheet, Alert, ScrollView } from 'react-native';
 import { Button, TextInput, Text } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser, updateUser } from '../../../redux/features/userSlice';
+import { router, useLocalSearchParams } from 'expo-router';
 
 const EditProfile = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.data);
+  const user = useLocalSearchParams();
   // console.log("user"+user.firstName)
-  const userStatus = useSelector((state) => state.user.status);
   const error = useSelector((state) => state.user.error);
 
 
   const [id, setId] = useState('');
-  const [first_name, setFirstName] = useState('');
-  const [last_name, setLastName] = useState('');
-  const [display_name, setDisplayName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [displayName, setDisplayName] = useState('');
   const [gender, setGender] = useState('');
-  const [birth_date, setBirthDate] = useState('');
+  const [birthDate, setBirthDate] = useState('');
   const [email, setEmail] = useState('');
-  const [phone_number, setPhoneNumber] = useState('');
-
-  useEffect(() => {
-    if (userStatus === 'idle') {
-      dispatch(fetchUser());
-    }
-  }, [userStatus]);
+  const [phoneNumber, setPhoneNumber] = useState('');
 
 
   useEffect(() => {
+    console.log(user)
     if (user) {
       setId(user.id);
-      setFirstName(user.first_name);
-      setLastName(user.last_name);
-      setDisplayName(user.display_name);
+      setFirstName(user.firstName);
+      setLastName(user.lastName);
+      setDisplayName(user.displayName);
       setGender(user.gender);
-      setBirthDate(user.birth_date);
+      setBirthDate(user.birthDate);
       setEmail(user.email);
-      setPhoneNumber(user.phone_number);
+      setPhoneNumber(user.phoneNumber);
     }
-  }, [user]);
+  }, []);
 
   // const userId = user.id;
   // console.log(userId)
 
   const handleUpdateProfile = () => {
-    const updatedData = { id,first_name, last_name, display_name, gender, birth_date, email, phone_number };
-    dispatch(updateUser({updatedData}))
+    const data = {
+      id: id,
+      firstName: firstName,
+      lastName: lastName,
+      displayName: displayName,
+      gender: gender,
+      birthDate: birthDate,
+      email: email,
+      phoneNumber: phoneNumber
+    };
+    dispatch(updateUser(data))
       .unwrap()
       .then(() => {
         Alert.alert('Profile updated successfully');
-        navigation.goBack();
+        router.push('profile');
       })
       .catch((err) => {
         Alert.alert('Failed to update profile', err.message);
       });
   };
 
-  if (userStatus === 'loading') {
-    return <Text>Loading...</Text>;
-  }
-
-  if (userStatus === 'failed') {
-    return <Text>Error: {error}</Text>;
-  }
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Edit Profile</Text>
       <TextInput
         label="First Name"
-        value={first_name}
+        value={firstName}
         onChangeText={setFirstName}
         style={styles.input}
       />
       <TextInput
         label="Last Name"
-        value={last_name}
+        value={lastName}
         onChangeText={setLastName}
         style={styles.input}
       />
       <TextInput
         label="Display Name"
-        value={display_name}
+        value={displayName}
         onChangeText={setDisplayName}
         style={styles.input}
       />
@@ -94,7 +90,7 @@ const EditProfile = ({ navigation, route }) => {
       />
       <TextInput
         label="Birth Date"
-        value={birth_date}
+        value={birthDate}
         onChangeText={setBirthDate}
         style={styles.input}
       />
@@ -107,16 +103,16 @@ const EditProfile = ({ navigation, route }) => {
       />
       <TextInput
         label="Phone Number"
-        value={phone_number}
+        value={phoneNumber}
         onChangeText={setPhoneNumber}
         style={styles.input}
       />
       <Button mode="contained" onPress={handleUpdateProfile} style={styles.button}>
         Save Changes
       </Button>
-      <Button mode="outlined" onPress={() => navigation.goBack()} style={styles.button}>
+      {/* <Button mode="outlined" onPress={() => navigation.goBack()} style={styles.button}>
         Cancel
-      </Button>
+      </Button> */}
     </ScrollView>
   );
 };

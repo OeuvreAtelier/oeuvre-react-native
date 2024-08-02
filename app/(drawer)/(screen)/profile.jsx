@@ -16,8 +16,7 @@ const Profile = () => {
   const role = useSelector((state) => state.user.role);
   const status = useSelector((state) => state.user.status);
   const error = useSelector((state) => state.user.error);
-  const [isArtist, setIsArtist] = useState(true)
-  // const [isCustomer, setIsCustomer] = useState(false)
+  const [isArtist, setIsArtist] = useState(false)
 
   const [profileImage, setProfileImage] = useState(null);
   const [headerImage, setHeaderImage] = useState(null);
@@ -25,7 +24,7 @@ const Profile = () => {
   console.log(user)
   const handleEditProfile = (updatedData) => {
     if (user) {
-      router.push('editProfile', {updatedData});
+      router.push({pathname: 'editProfile', params: { ...updatedData } });
     } else {
       console.error('User data not available');
     }
@@ -34,67 +33,47 @@ const Profile = () => {
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
-
-  useEffect(() => {
-    const loadImages = async () => {
-      try {
-        const savedProfileImage = await AsyncStorage.getItem('profileImage');
-        const savedHeaderImage = await AsyncStorage.getItem('headerImage');
-
-        if (savedProfileImage) setProfileImage(savedProfileImage);
-        if (savedHeaderImage) setHeaderImage(savedHeaderImage);
-      } catch (error) {
-        console.error('Failed to load images from storage', error);
+  
+    // useEffect(() => {
+    //   const fetchImages = async () => {
+    //     try {
+    //       const response = await axiosInstance.get('/users/picture'); 
+    //       setHeaderImage(response.data.headerImage);
+    //       const banner = await axiosInstance.get('/users/banner'); 
+    //       setProfileImage(banner.data.profileImage);
+    //     } catch (error) {
+    //       console.error('Error fetching images:', error);
+    //     }
+    //   };
+  
+    //   fetchImages();
+    // }, []);
+  
+    const pickImage = async (type) => {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+  
+      if (!result.canceled) {
+        const uri = result.assets[0].uri;
+        if (type === 'header') {
+          setHeaderImage(uri);
+          await axiosInstance.post('/users/picture', { headerImage: uri }); 
+        } else if (type === 'profile') {
+          setProfileImage(uri);
+          await axiosInstance.post('/users/banner', { profileImage: uri }); 
+        }
       }
     };
-
-    loadImages();
-  }, []);
-
-  const pickImage = async (type) => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      const uri = result.assets[0].uri;
-      if (type === 'header') {
-        setHeaderImage(uri);
-        await AsyncStorage.setItem('headerImage', uri);
-      } else if (type === 'profile') {
-        setProfileImage(uri);
-        await AsyncStorage.setItem('profileImage', uri);
-      }
-    }
-  };
-
-  useEffect(() => {
-    if (role.includes('ROLE_ARTIST')) {
-      setIsArtist(true);
-    } else {
-      setIsArtist(false);
-    }
-  }, [role]);
-
-  // useEffect(() => {
-  //   if (role.includes('ROLE_ARTIST')) {
-  //     setIsArtist(true);
-  //   } else {
-  //     setIsArtist(false);
-  //   }
-  // }, [role]);
 
 
   const handlePress = (product) => {
     router.push('detailProduct', { product });
   };
 
-  // const toggleProfileMode = () => {
-  //   setIsArtist(prevState => !prevState); 
-  // };
 
   if (status === 'loading') {
     return (
@@ -118,19 +97,19 @@ const Profile = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Image 
-          source={headerImage ? { uri: headerImage } : defaultHeaderImage} 
-          style={styles.headerImage} 
-        />
+    <Image 
+        source={headerImage ? { uri: headerImage } : { uri: "https://ik.imagekit.io/muffincrunchy/oeuvre-images/user-banner/default_banner.jpg?updatedAt=1722306482126" }} 
+        style={styles.headerImage} 
+    />
         <TouchableOpacity style={styles.editPhotoContainerHeader} onPress={() => pickImage('header')}>
           <Ionicons name="camera" size={16} color="#fff" />
           <Text style={styles.editPhotoText}>Edit Foto</Text>
         </TouchableOpacity>
-      </View>
+        </View>
       <View style={styles.profileImageContainer}>
-        <Image 
-          src="https://ik.imagekit.io/muffincrunchy/oeuvre-images/user-picture/78bb4477-8683-4bab-95f2-744ed1051b79-ks_amc_eedbS.jpeg"
-          // source={profileImage ? { uri: profileImage } : defaultProfileImage} 
+        <Image
+          // src="https://ik.imagekit.io/muffincrunchy/oeuvre-images/user-picture/78bb4477-8683-4bab-95f2-744ed1051b79-ks_amc_eedbS.jpeg"
+          source={profileImage ? { uri: profileImage } : { uri: "https://ik.imagekit.io/muffincrunchy/oeuvre-images/user-picture/default_picture.jpg?updatedAt=1722306891846" }} 
           style={styles.profileImage} 
         />
         <TouchableOpacity style={styles.editPhotoContainerProfile} onPress={() => pickImage('profile')}>
@@ -140,10 +119,10 @@ const Profile = () => {
       </View>
       <View style={styles.profileInfo}>
         <Text style={styles.displayName}>{user.displayName}</Text>
-        <Button title="Edit Profile" onPress={handleEditProfile}/>
+        <Button title="Edit Profile" onPress={() => handleEditProfile(user)}/>
       </View>
 
-      {!isArtist ? (
+      {user.isArtist ? (
         <View style={styles.profileDetailsContainer}>
           <View style={styles.profileDetails}>
             <Text style={styles.sectionTitle}>Data Diri</Text>

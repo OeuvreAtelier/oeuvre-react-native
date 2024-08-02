@@ -4,6 +4,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { DrawerToggleButton } from '@react-navigation/drawer';
+import { useDispatch } from "react-redux";
+import { addToCart } from "../../../redux/features/cartSlice";
 
 const DetailProduct = () => {
     const [isHeartClicked, setIsHeartClicked] = useState(false);
@@ -15,10 +17,18 @@ const DetailProduct = () => {
     const description = JSON.parse(product.description);
     const image = JSON.parse(product.image);
 
+    const dispatch = useDispatch();
+
 console.log(product);
     const addToWishlist = (product) => {
         setWishlist([...wishlist, product]);
     };
+
+
+  const handleAddToCart = () => {
+    dispatch(addToCart(product))
+    router.push('cart')
+  };
 
     const handleHeartClick = () => {
         setIsHeartClicked(!isHeartClicked);
@@ -76,7 +86,7 @@ console.log(product);
                 </View>
             </ScrollView>
             <View style={styles.footer}>
-                <Button title="Add to Cart" onPress={() => {}} />
+                <Button title="Add to Cart" onPress={handleAddToCart} />
             </View>
         </SafeAreaView>
     );
