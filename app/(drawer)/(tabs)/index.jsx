@@ -46,7 +46,7 @@ const Home = () => {
             params: { category },
         });
     };
-
+//
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.heading}>Categories</Text>
