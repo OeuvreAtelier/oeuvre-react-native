@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, ScrollView, StyleSheet, Button, Image, SafeAreaView, TouchableOpacity, Animated } from "react-native";
+import { View, Text, ScrollView, StyleSheet, Button, Image, SafeAreaView, TouchableOpacity, Animated, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -26,8 +26,10 @@ console.log(product);
 
 
   const handleAddToCart = () => {
-    dispatch(addToCart(product))
-    router.push('cart')
+    if (product.stock > 0) { 
+        dispatch(addToCart(product))
+        router.push('cart')        
+    }
   };
 
     const handleHeartClick = () => {
@@ -51,7 +53,7 @@ console.log(product);
                 </TouchableOpacity>
             </Animated.View>
             <Animated.View style={[styles.cartButton, { opacity: headerOpacity }]}>
-                <TouchableOpacity onPress={() => { router.push("/cart") }}>
+                <TouchableOpacity onPress={() => { router.push("cart") }}>
                     <Ionicons name="cart" size={24} color="#fff" />
                 </TouchableOpacity>
             </Animated.View>
@@ -86,7 +88,15 @@ console.log(product);
                 </View>
             </ScrollView>
             <View style={styles.footer}>
-                <Button title="Add to Cart" onPress={handleAddToCart} />
+            <Pressable
+                    style={[styles.button, product.stock === 0 && styles.soldOutButton]}
+                    onPress={handleAddToCart}
+                    disabled={product.stock === 0}
+                >
+                    <Text style={styles.buttonText}>
+                        {product.stock === 0 ? "Sold Out" : "Add to Cart"}
+                    </Text>
+                </Pressable>
             </View>
         </SafeAreaView>
     );
@@ -169,6 +179,19 @@ const styles = StyleSheet.create({
         padding: 10,
         borderTopWidth: 1,
         borderTopColor: "#ddd",
+    },
+    button: {
+        backgroundColor: "#007bff",
+        padding: 10,
+        borderRadius: 5,
+        alignItems: "center",
+    },
+    buttonText: {
+        color: "#fff",
+        fontSize: 16,
+    },
+    soldOutButton: {
+        backgroundColor: "#ccc",
     },
 });
 

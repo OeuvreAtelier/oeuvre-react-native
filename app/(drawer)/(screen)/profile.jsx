@@ -9,6 +9,7 @@ import defaultHeaderImage from '../../../assets/default-header-image.png';
 import defaultProfileImage from '../../../assets/default-profile-image.png';
 import CardProduct from "../../../components/CardProduct";
 import { fetchUser } from "../../../redux/features/userSlice";
+import axiosInstance from "../../../api/axiosInstance";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -33,21 +34,37 @@ const Profile = () => {
   useEffect(() => {
     dispatch(fetchUser());
   }, [dispatch]);
+
+  useEffect(() => {
+    const loadImages = async () => {
+      try {
+        const savedProfileImage = await AsyncStorage.getItem('profileImage');
+        const savedHeaderImage = await AsyncStorage.getItem('headerImage');
+
+        if (savedProfileImage) setProfileImage(savedProfileImage);
+        if (savedHeaderImage) setHeaderImage(savedHeaderImage);
+      } catch (error) {
+        console.error('Failed to load images from storage', error);
+      }
+    };
+
+    loadImages();
+  }, []);
   
-    // useEffect(() => {
-    //   const fetchImages = async () => {
-    //     try {
-    //       const response = await axiosInstance.get('/users/picture'); 
-    //       setHeaderImage(response.data.headerImage);
-    //       const banner = await axiosInstance.get('/users/banner'); 
-    //       setProfileImage(banner.data.profileImage);
-    //     } catch (error) {
-    //       console.error('Error fetching images:', error);
-    //     }
-    //   };
+    useEffect(() => {
+      const fetchImages = async () => {
+        try {
+          const response = await axiosInstance.get('/users/picture'); 
+          setHeaderImage(response.data.headerImage);
+          const banner = await axiosInstance.get('/users/banner'); 
+          setProfileImage(banner.data.profileImage);
+        } catch (error) {
+          console.error('Error fetching images:', error);
+        }
+      };
   
-    //   fetchImages();
-    // }, []);
+      fetchImages();
+    }, []);
   
     const pickImage = async (type) => {
       let result = await ImagePicker.launchImageLibraryAsync({
@@ -164,9 +181,8 @@ const Profile = () => {
       ) : (
         <>
           <Text style={styles.bio}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam ut dolores exercitationem sunt, voluptate vel voluptas quam beatae qui unde nobis molestiae aperiam repellat debitis inventore eos, nam dolorum? Exercitationem.
-            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Earum assumenda, omnis, iusto asperiores, labore ducimus dolorum harum maiores et commodi quia est a eos tempora debitis illo ex repellat. Hic.
-          </Text>
+           {user.store.description}
+           </Text>
           <View style={styles.emailContainer}>
             <Ionicons name="mail" size={18} color="#333" />
             <Text style={styles.emailText}>{user.email}</Text>

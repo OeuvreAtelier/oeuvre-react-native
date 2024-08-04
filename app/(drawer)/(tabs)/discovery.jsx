@@ -12,7 +12,7 @@ const Discovery = () => {
     const dispatch = useDispatch();
     const products = useSelector((state) => state.products.data);
     const router = useRouter();
-    const { category } = useLocalSearchParams(); // Mengambil parameter kategori jika ada
+    const { category } = useLocalSearchParams(); 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(category || '');
     const [selectedType, setSelectedType] = useState('');
