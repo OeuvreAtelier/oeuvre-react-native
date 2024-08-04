@@ -8,9 +8,8 @@ import { addToCart, clearCart, removeFromCart, selectCartItems } from '../../../
 import { createTransaction } from '../../../redux/features/transactionSlice';
 import { RadioButton } from 'react-native-paper';
 import { fetchProduct } from '../../../redux/features/productSlice';
-import { Redirect } from 'expo-router';
 
-const Payment = () => {
+const Cart = () => {
   const [formData, setFormData] = useState({});
   const dispatch = useDispatch();
   const router = useRouter();
@@ -20,12 +19,10 @@ const Payment = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [redirect, setRedirectUrl] = useState(null);
 
-
   useEffect(() => {
-    console.log(cartItems);
-    
     if (user.id) {
       dispatch(fetchAddressByUserId(user.id));
       setFormData({
@@ -38,16 +35,6 @@ const Payment = () => {
     }
   }, [dispatch, user.id, selectedAddress]);
 
-  // useEffect(() => {
-  //   if (user.id) {
-  //     setFormData({
-  //       userId: user.id,
-  //       addressId: selectedAddress,
-  //       transactionDetails: [],
-  //     });
-  //   }
-  // }, [user.id, selectedAddress]);
-
   const handleRadioChange = (addressId) => {
     setSelectedAddress(addressId);
     setFormData({
@@ -56,71 +43,29 @@ const Payment = () => {
     });
   };
 
-  // const handleSubmit = async () => {
-  //   console.log("Processing transaction:", formData);
-  //   try {
-  //     const action = createTransaction(formData);
-  //     const transactionResponse = await dispatch(action).unwrap();
-  //     console.log("Transaction response:", transactionResponse);
-  //     const token = transactionResponse.data.payment.token;
-  //     if (!token) {
-  //       throw new Error("Error getting token!");
-  //     }
-  //     window.snap.pay(token, {
-  //       onSuccess: function (result) {
-  //         console.log("Payment successful:", result);
-  //         dispatch(clearCart());
-  //         router.push("/success");
-  //       },
-  //       onPending: function (result) {
-  //         console.log("Payment pending:", result);
-  //       },
-  //       onError: function (result) {
-  //         console.log("Payment error:", result);
-  //       },
-  //       onClose: function () {
-  //         console.log("Customer closed the popup without finishing the payment");
-  //       },
-  //     });
-  //   } catch (error) {
-  //     console.error("Error creating transaction!", error);
-  //     alert("Error creating transaction!");
-  //   }
-  // };
-
   const processPayment = async (token, redirectUrl) => {
     setLoading(true);
     setModalVisible(true);
+    setPaymentSuccess(false);
 
     try {
       setTimeout(async () => {
         setLoading(false);
-        setModalVisible(false);
+        setPaymentSuccess(true);
 
+        // Simulate a successful payment response
         const paymentResponse = { success: true };
 
         if (paymentResponse.success) {
           console.log("Payment successful:", paymentResponse);
           dispatch(clearCart());
-          dispatch(fetchProduct())
-          Toast.show({
-            type: 'success',
-            position: 'top',
-            text1: 'Payment Successful!',
-            text2: 'Your payment was processed successfully.',
-          });
+          dispatch(fetchProduct());
         } else {
           throw new Error("Payment processing failed");
         }
       }, 2000);
     } catch (error) {
       console.error("Error processing payment:", error);
-      Toast.show({
-        type: 'error',
-        position: 'top',
-        text1: 'Transaction Error',
-        text2: 'An error occurred while processing the payment.',
-      });
     }
   };
 
@@ -151,7 +96,6 @@ const Payment = () => {
     }
   };
 
-
   const numberWithDots = (x) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   };
@@ -180,7 +124,6 @@ const Payment = () => {
         ],
       });
     }
-    
   };
 
   const removeFromTransactionDetails = (item) => {
@@ -311,31 +254,39 @@ const Payment = () => {
       </View>
 
       <Modal
-      transparent={true}
-      visible={modalVisible}
-      animationType="fade"
-      onRequestClose={() => setModalVisible(false)}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          {loading ? (
-            <ActivityIndicator size="large" color="#4b0082" />
-          ) : (
-            <Ionicons name="checkmark-circle" size={80} color="#4b0082" />
-          )}
-          <Text style={styles.modalText}>
-            {loading ? "Processing Payment..." : "Payment Complete!"}
-          </Text>
-          <TouchableOpacity
-            style={styles.modalButton}
-            onPress={() => setModalVisible(false)}
-          >
-            <Text style={styles.modalButtonText}>Close</Text>
-          </TouchableOpacity>
+        transparent={true}
+        visible={modalVisible}
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            {loading ? (
+              <ActivityIndicator size="large" color="#4b0082" />
+            ) : paymentSuccess ? (
+              <View style={styles.successContainer}>
+                <Ionicons name="checkmark-circle" size={80} color="#4b0082" />
+                <Text style={styles.modalText}>Confirmation Purchase Success</Text>
+                <Text style={styles.modalText}>Continue payment, please go to the transaction page</Text>
+                <TouchableOpacity
+                  style={styles.modalButton}
+                  onPress={() => {
+                    setModalVisible(false);
+                    router.push('/transaction');
+                  }}
+                >
+                  <Text style={styles.modalButtonText}>Go to Transactions</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={styles.successContainer}>
+                <ActivityIndicator size="large" color="#4b0082" />
+                <Text style={styles.modalText}>Processing Payment...</Text>
+              </View>
+            )}
+          </View>
         </View>
-      </View>
-      <Redirect href={redirect} />
-    </Modal>
+      </Modal>
     </ScrollView>
   );
 };
@@ -514,9 +465,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
   },
+  successContainer: {
+    alignItems: 'center',
+  },
   modalText: {
     fontSize: 18,
     marginVertical: 20,
+    textAlign: 'center',
   },
   modalButton: {
     marginTop: 20,
@@ -530,4 +485,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Payment;
+export default Cart;
