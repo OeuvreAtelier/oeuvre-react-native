@@ -26,9 +26,6 @@ export default function TabsLayout() {
       case "transaction":
         name = focused ? "wallet" : "wallet-outline";
         break;
-      case "whislist":
-        name = focused ? "bookmarks" : "bookmarks-outline";
-        break;
       case "discovery":
         name = focused ? "compass" : "compass-outline"
       default:
@@ -62,10 +59,6 @@ export default function TabsLayout() {
       <Tabs.Screen name="transaction" options={{
         header: () => <CustomHeader title="Transaction" cartIcon={<CartIcon />} headerRight={<DrawerToggleButton tintColor="#fff" />} />,
         title: "Transaction"
-      }} />
-      <Tabs.Screen name="whislist" options={{
-        header: () => <CustomHeader title="Bookmarks" cartIcon={<CartIcon />} headerRight={<DrawerToggleButton tintColor="#fff" />} />,
-        title: "Bookmarks"
       }} />
     </Tabs>
     
