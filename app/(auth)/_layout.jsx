@@ -7,7 +7,7 @@ const AuthLayout = () => {
     <>
       <Stack>
         <Stack.Screen
-          name="login"
+          name="index"
           options={{
             headerShown: false,
           }}

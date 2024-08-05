@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Alert, BackHandler, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { useAuth } from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -11,6 +11,22 @@ export default function Login() {
   const {login} = useAuth();
   const router = useRouter();
 
+  useEffect(() => {
+    const onBackPress = () => {
+      Alert.alert(
+        "Exit App", "Do you want to exit?",
+          [
+            { text: "Cancel", onPress: () => {}},
+            { text: "Yes", onPress: () => BackHandler.exitApp()}
+          ],
+          { cancelable: false}
+        );
+        return true;
+      };
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+    return () => backHandler.remove()
+  }, [])
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -19,7 +35,7 @@ export default function Login() {
       console.log("success...", success);
       const userId = await AsyncStorage.getItem("id")
       if (success) {
-        router.replace('(drawer)');
+        router.replace('(tabs)/home');
       } else {
         setErrorMessage("Invalid username or password");
       }

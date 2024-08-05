@@ -11,15 +11,15 @@ export default function RootLayout() {
             <Provider store={store}>
                 <Stack>
                     <Stack.Screen
+                        name="(auth)"
+                        options={{
+                            headerShown: false
+                        }} />
+                    <Stack.Screen
                         name="(drawer)"
                         options={{
                             headerShown: false
                             , header: () => <CustomHeader />
-                        }} />
-                    <Stack.Screen
-                        name="(auth)"
-                        options={{
-                            headerShown: false
                         }} />
                 </Stack>
             </Provider>

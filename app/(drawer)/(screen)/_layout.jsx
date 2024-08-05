@@ -5,7 +5,7 @@ import { Ionicons } from "@expo/vector-icons";
 import EditProfile from "./editProfile"
 
 export const unstable_settings = {
-    initialRoutename: '/index',
+    initialRoutename: '/home',
 }
 
 export default function ScreenLayout() {
@@ -22,15 +22,6 @@ export default function ScreenLayout() {
                 <Ionicons name="arrow-back" size={28} color="#3730a3" />
               </TouchableOpacity>)
             }}/>
-            <Stack.Screen name="about" 
-            options={{title:"About", headerLeft: () => (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.goBack(unstable_settings);
-                }}>
-                <Ionicons name="arrow-back" size={28} color="#3730a3" />
-              </TouchableOpacity>
-            ), }}/>
             <Stack.Screen name="address" options={{title: "Address", headerLeft: () => (
               <TouchableOpacity
                 onPress={() => {

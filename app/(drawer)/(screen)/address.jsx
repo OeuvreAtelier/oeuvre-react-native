@@ -69,15 +69,6 @@ export default function AddressScreen() {
     });
   };
 
-  const handleDelete = async (id) => {
-    try {
-      await dispatch(deleteAddress(id)).unwrap();
-      await dispatch(fetchAddressByUserId(userId)).unwrap();
-    } catch (error) {
-      Alert.alert('Success to delete address');
-    }
-  };
-
   const handleSelect = (id) => {
     setSelectedAddress(prevSelected => (prevSelected === id ? null : id));
   };
@@ -103,9 +94,6 @@ export default function AddressScreen() {
         <TouchableOpacity onPress={() => handleEditAddress(item)}>
           <Ionicons name="create-outline" size={24} color="blue" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleDelete(item.id)}>
-          <Ionicons name="trash-outline" size={24} color="red" />
-        </TouchableOpacity>
       </View>
     </View>
   );
@@ -125,6 +113,7 @@ export default function AddressScreen() {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

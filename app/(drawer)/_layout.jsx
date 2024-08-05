@@ -1,30 +1,45 @@
 import { View, Text, StyleSheet, Image } from "react-native";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Drawer } from "expo-router/drawer";
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import { router, usePathname } from "expo-router";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUser } from "../../redux/features/userSlice";
+import { useAuth } from "../../context/AuthContext";
 
 const CustomDrawerContent = (props) => {
   const pathname = usePathname();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.data)
+  const [profileImage, setProfileImage] = useState(null);
 
   useEffect(() => {
-    console.log(pathname);
-  }, [pathname]);
+    dispatch(fetchUser())
+  }, [dispatch]);
+
+  // console.log(user)
+
+  // useEffect(() => {
+  //   if (user) {
+  //     setProfileImage(user.image ? user.imagePicture.path : "https://ik.imagekit.io/muffincrunchy/oeuvre-images/user-picture/default_picture.jpg?updatedAt=1722306891846");
+  //   }
+  // }, [user]);
 
   return (
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props}>
         <View style={styles.userInfoWrapper}>
           <Image
-            src="https://randomuser.me/api/portraits/men/26.jpg"
+            source={user ? { uri: user.imagePicture.path } : { uri: "https://ik.imagekit.io/muffincrunchy/oeuvre-images/user-picture/default_picture.jpg?updatedAt=1722306891846" }} 
             width={80}
             height={80}
             style={styles.userImg}
           />
           <View style={styles.userDetailsWrapper}>
-            <Text style={styles.userName}>John Doe</Text>
-            <Text style={styles.userEmail}>john@email.com</Text>
+            <Text style={styles.userName}>{user ? user.displayName : "Guest"}</Text>
+            <Text style={styles.userEmail}>{user ? user.email : ""}</Text>
+            <Ionicons />
           </View>
         </View>
         <DrawerItem
@@ -63,24 +78,6 @@ const CustomDrawerContent = (props) => {
             router.push("(screen)/address");
           }}
         />
-        <DrawerItem
-          icon={({ color, size }) => (
-            <Ionicons
-              name="information-circle-outline"
-              size={size}
-              color={pathname == "/information-circle" ? "#fff" : "#000"}
-            />
-          )}
-          label={"About"}
-          labelStyle={[
-            styles.navItemLabel,
-            { color: pathname == "/information-circle" ? "#fff" : "#000" },
-          ]}
-          style={{ backgroundColor: pathname == "/information-circle" ? "#333" : "#fff" }}
-          onPress={() => {
-            router.push("(screen)/about");
-          }}
-        />
       </DrawerContentScrollView>
       <View style={{ marginBottom: 5 }}>
         <DrawerItem
@@ -98,7 +95,7 @@ const CustomDrawerContent = (props) => {
           ]}
           style={{ backgroundColor: pathname == "/log-out" ? "#333" : "#fff" }}
           onPress={() => {
-            router.replace("(auth)/login");
+            router.push("(auth)");
           }}
         />
       </View>
