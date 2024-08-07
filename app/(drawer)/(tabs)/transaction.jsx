@@ -57,7 +57,6 @@ export default function Transaction() {
         Alert.alert("Error", "Redirect URL not found!");
         return;
       }
-
       Alert.alert("Success", "Payment successful!");
     } catch (error) {
       console.error("Cannot pay for the selected transaction!", error);
@@ -70,13 +69,11 @@ export default function Transaction() {
       dispatch(fetchTransactionsByUserId({ userId: user.id, page: currentPage + 1 }));
     }
   };
-
   const handlePreviousPage = () => {
     if (hasPrevious && !loading) {
       dispatch(fetchTransactionsByUserId({ userId: user.id, page: currentPage - 1 }));
     }
   };
-
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
