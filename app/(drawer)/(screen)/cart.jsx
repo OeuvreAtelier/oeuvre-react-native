@@ -126,6 +126,7 @@ const Cart = () => {
     }
   };
 
+
   const removeFromTransactionDetails = (item) => {
     const isItemInDetails = formData.transactionDetails.find(
       (detail) => detail.productId === item.id
@@ -195,6 +196,7 @@ const Cart = () => {
         </View>
       </View>
 
+
       <Text style={styles.heading}>My Shopping Cart</Text>
       <View style={styles.cartContainer}>
         <View style={styles.cartItems}>
@@ -252,6 +254,7 @@ const Cart = () => {
           <Text style={styles.payButtonText}>Pay Now</Text>
         </TouchableOpacity>
       </View>
+
 
       <Modal
         transparent={true}
@@ -442,6 +445,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+
     backgroundColor: '#4b0082',
     paddingVertical: 10,
     borderRadius: 8,

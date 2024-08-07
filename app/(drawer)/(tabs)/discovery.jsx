@@ -18,13 +18,39 @@ const Discovery = () => {
     const [selectedType, setSelectedType] = useState('');
     const [productName, setProductName] = useState('');
 
+    // console.log("discovery", category)
+
     useEffect(() => {
-        dispatch(fetchProductsByNameCategoryAndType({
-            productName: '',
-            category: selectedCategory,
-            type: '',
-        }));
-    }, [dispatch, selectedCategory]);
+        if (category) {
+           
+        //   const { category } = params
+          dispatch(
+            fetchProductsByNameCategoryAndType({
+              productName: "",
+              category: category,
+              type: "",
+            })
+          )
+        } else {
+          dispatch(
+            fetchProductsByNameCategoryAndType({
+              productName: "",
+              category: "",
+              type: "",
+            })
+          )
+        }
+      }, [dispatch, category])
+    // useEffect(() => {
+    //     dispatch(
+    //       fetchProductsByNameCategoryAndType({
+    //         productName: "",
+    //         category: category || "", 
+    //         type: "",
+    //       })
+    //     );
+    
+    //   }, [dispatch, category]); 
 
     const handlePress = (product) => {
         router.push({

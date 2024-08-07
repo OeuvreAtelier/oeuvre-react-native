@@ -11,8 +11,7 @@ export const fetchUser = createAsyncThunk('user/fetchUser', async (_, { rejectWi
     }
 
     const decoded = jwtDecode(token);
-    console.log(decoded)
-   const user_account_id = decoded.sub;
+    const user_account_id = decoded.sub;
    
     const response = await axiosInstance.get(`/users/account/${user_account_id}`);
     const userData = response.data.data;
@@ -47,7 +46,6 @@ export const updateImage = createAsyncThunk(
           "Content-Type": "multipart/form-data",
         },
       })
-      console.log("Response:", response.data)
       return response.data
     } catch (error) {
       return rejectedWithValue(error.response.data)

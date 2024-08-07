@@ -1,9 +1,18 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
-const axiosInstance = axios.create({
-  baseURL: "http://10.10.103.55:8080/api/v3",
+
+const axiosInstance = axios.create({ 
+  baseURL: "https://pleasing-smart-gator.ngrok-free.app/api/v3", 
+  headers: { 
+    "Content-Type": "application/json", 
+    "ngrok-skip-browser-warning": "any-value", 
+  },
 });
+// const axiosInstance = axios.create({
+//   // baseURL: "https://pleasing-smart-gator.ngrok-free.app/api/v3",
+//   baseURL: "http://10.10.103.55:8080/api/v3",
+// });
 
 axiosInstance.interceptors.request.use(
   async (config) => {
@@ -28,7 +37,7 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       if (typeof window !== 'undefined') {
-        window.location = "login";
+        window.location = "index";
       }
     }
     return Promise.reject(error);

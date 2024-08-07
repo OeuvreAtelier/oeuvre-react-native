@@ -16,10 +16,10 @@ const DetailProduct = () => {
     const [wishlist, setWishlist] = useState([]);
     const description = JSON.parse(product.description);
     const image = JSON.parse(product.image);
-
+    
     const dispatch = useDispatch();
-
-console.log(product);
+    
+    console.log(product);
     const addToWishlist = (product) => {
         setWishlist([...wishlist, product]);
     };
@@ -72,17 +72,9 @@ console.log(product);
                 <View style={styles.bodyContainer}>
                     <View style={styles.titleContainer}>
                         <Text style={styles.title}>{product.name}</Text>
-                        <TouchableOpacity onPress={handleHeartClick}>
-                            <Ionicons
-                                name={isHeartClicked ? "heart" : "heart-outline"}
-                                size={24}
-                                color={isHeartClicked ? "red" : "black"}
-                                style={styles.heartIcon}
-                            />
-                        </TouchableOpacity>
                     </View>
                     <Text style={styles.subtitle}>{product.category}</Text>
-                    <Text style={styles.price}>{product.price}</Text>
+                    <Text style={styles.price}>Rp{product.price}</Text>
                     <Text style={styles.description}>Detail Product</Text>
                     <Text style={styles.longText}>{description.description}</Text>
                 </View>
@@ -150,21 +142,20 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: "bold",
     },
-    heartIcon: {
-        marginLeft: 10,
-    },
+
     subtitle: {
-        fontSize: 18,
+        fontSize: 12,
         marginBottom: 10,
     },
     price: {
-        fontSize: 18,
-        fontWeight: "bold",
+        fontSize: 14,
         marginBottom: 10,
+        color: "#3730a3"
     },
     description: {
-        fontSize: 16,
+        fontSize: 20,
         marginBottom: 10,
+        fontWeight: "bold"
     },
     longText: {
         fontSize: 16,

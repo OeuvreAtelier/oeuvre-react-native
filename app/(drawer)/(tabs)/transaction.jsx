@@ -19,28 +19,29 @@ export default function Transaction() {
     dispatch(fetchTransactionsByUserId({ userId: user.id, page: 1 }));
   }, [dispatch, user.id]);
 
+  console.log(transactions)
   useEffect(() => {
     if (transactions.length > 0) {
       const urls = {};
-      const tokensMap = {}; // Objek untuk menyimpan tokens
+      const tokensMap = {};
 
       transactions.forEach((trx) => {
         if (trx.payment.redirectUrl) {
           urls[trx.id] = trx.payment.redirectUrl;
         }
         if (trx.payment.token) {
-          tokensMap[trx.id] = trx.payment.token; // Simpan token berdasarkan ID transaksi
+          tokensMap[trx.id] = trx.payment.token;
         }
       });
 
       setRedirectUrls(urls);
-      setTokens(tokensMap); // Simpan tokens dalam state
+      setTokens(tokensMap); 
     }
   }, [transactions]);
 
   const handlePayment = (transactionId) => {
     try {
-      const token = tokens[transactionId]; // Ambil token berdasarkan ID transaksi
+      const token = tokens[transactionId]; 
       if (!token) {
         throw new Error("Error getting token!");
       }
@@ -56,7 +57,6 @@ export default function Transaction() {
         Alert.alert("Error", "Redirect URL not found!");
         return;
       }
-
       Alert.alert("Success", "Payment successful!");
     } catch (error) {
       console.error("Cannot pay for the selected transaction!", error);
@@ -69,7 +69,6 @@ export default function Transaction() {
       dispatch(fetchTransactionsByUserId({ userId: user.id, page: currentPage + 1 }));
     }
   };
-
   const handlePreviousPage = () => {
     if (hasPrevious && !loading) {
       dispatch(fetchTransactionsByUserId({ userId: user.id, page: currentPage - 1 }));
@@ -94,7 +93,7 @@ export default function Transaction() {
                 },
               ]}
             >
-              {trx.payment.transactionStatus.toUpperCase()}
+              {trx.payment.transactionStatus === "settlement" ? "Success" : "Pending"}
             </Text>
             <Text style={styles.address}>
               Delivery Address: {`${trx.address.detail}, ${trx.address.city}, ${trx.address.state}, ${trx.address.country} ${trx.address.postalCode}`}
@@ -110,7 +109,7 @@ export default function Transaction() {
                 <Text style={styles.totalPrice}>
                   Total Price: Rp{(trxDetail.quantity * trxDetail.product.price).toLocaleString()}
                 </Text>
-                {trx.payment.transactionStatus !== "paid" && (
+                {trx.payment.transactionStatus === "ordered" && (
                   <TouchableOpacity
                     style={styles.payButton}
                     onPress={() => handlePayment(trx.id)}
@@ -154,6 +153,8 @@ export default function Transaction() {
     </ScrollView>
   );
 }
+
+
 
 const styles = StyleSheet.create({
   container: {

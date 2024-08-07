@@ -20,14 +20,11 @@ export default function TabsLayout() {
   function getTabBarIcon(routeName, { color, focused, size }) {
     let name;
     switch (routeName) {
-      case "index":
+      case "home":
         name = focused ? "home" : "home-outline";
         break;
       case "transaction":
         name = focused ? "wallet" : "wallet-outline";
-        break;
-      case "whislist":
-        name = focused ? "bookmarks" : "bookmarks-outline";
         break;
       case "discovery":
         name = focused ? "compass" : "compass-outline"
@@ -51,7 +48,7 @@ export default function TabsLayout() {
     <Tabs screenOptions={({ route }) => ({
       tabBarIcon: (opt) => getTabBarIcon(route.name, opt),
     })}>
-      <Tabs.Screen name="index" options={{
+      <Tabs.Screen name="home" options={{
         header: () => <CustomHeader title="Home" cartIcon={<CartIcon />} headerRight={<DrawerToggleButton tintColor="#fff" />} />,
         title: "Home"
       }} />
@@ -62,10 +59,6 @@ export default function TabsLayout() {
       <Tabs.Screen name="transaction" options={{
         header: () => <CustomHeader title="Transaction" cartIcon={<CartIcon />} headerRight={<DrawerToggleButton tintColor="#fff" />} />,
         title: "Transaction"
-      }} />
-      <Tabs.Screen name="whislist" options={{
-        header: () => <CustomHeader title="Bookmarks" cartIcon={<CartIcon />} headerRight={<DrawerToggleButton tintColor="#fff" />} />,
-        title: "Bookmarks"
       }} />
     </Tabs>
     
